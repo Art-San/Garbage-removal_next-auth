@@ -1,4 +1,5 @@
 import prisma from './prisma-singleton'
+import { hashPassword } from './utils/hash.util'
 
 // Заполнение БД тестовыми данными
 const seedUsers = async () => {
@@ -19,18 +20,46 @@ export async function getUsers() {
   await new Promise((resolve) => setTimeout(resolve, 2000))
   return prisma.user.findMany()
 }
+
 export async function getUser(id: number) {
   await new Promise((resolve) => setTimeout(resolve, 1500))
   return prisma.user.findUnique({
     where: { id }
   })
 }
+
 export async function addUser(email: string, password: string, name: string) {
   await new Promise((resolve) => setTimeout(resolve, 1500))
   return prisma.user.create({
     data: { email, password, name }
   })
 }
+export async function registerUser(email: string, password: string) {
+  try {
+    // Проверка уникальности почты
+    const existingUser = await prisma.user.findUnique({
+      where: { email }
+    })
+
+    if (existingUser) {
+      throw Error('Email занят')
+    }
+
+    // Хэширование пароля
+    const hashedPassword = await hashPassword(password)
+
+    // Создание пользователя
+    return await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword
+      }
+    })
+  } catch (err) {
+    throw err
+  }
+}
+
 export async function updateUser(
   id: number,
   email: string,
@@ -43,6 +72,7 @@ export async function updateUser(
     data: { email, password, name }
   })
 }
+
 export async function deleteUser(id: number) {
   await new Promise((resolve) => setTimeout(resolve, 1500))
   return prisma.user.delete({

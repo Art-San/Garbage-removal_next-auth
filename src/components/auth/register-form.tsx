@@ -37,6 +37,7 @@ const registerSchema = z
 export function RegisterForm() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
   const form = useForm({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -48,13 +49,13 @@ export function RegisterForm() {
 
   // const { register, isPending, errorMessage } = useRegister()
 
-  const isPending = false
-  const errorMessage = undefined
+  // const isPending = false
+  // const errorMessage = undefined
 
   async function onSubmit(values: z.infer<typeof registerSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(123, values)
+    // console.log(123, values)
 
     setLoading(true)
     try {
@@ -63,11 +64,16 @@ export function RegisterForm() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: values.email, password: values.password })
       })
-      if (response.ok) {
+
+      if (!response.ok) {
+        setErrorMessage('Что то пошло не так')
+        router.push('/')
+      } else {
         router.push('/users-db')
       }
     } catch (error) {
-      console.error('Error:', error)
+      // setErrorMessage(error)
+      console.error(12, 'Error:', error)
     } finally {
       setLoading(false)
     }
