@@ -2,9 +2,9 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 export default function CreateUser() {
-  const [title, setTitle] = useState('')
-  const [price, setPrice] = useState('')
-  const [description, setDescription] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -14,7 +14,7 @@ export default function CreateUser() {
       const response = await fetch('/react-form/api', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, price, description })
+        body: JSON.stringify({ email, password, name })
       })
       if (response.ok) {
         router.push('/users-db')
@@ -27,30 +27,31 @@ export default function CreateUser() {
   }
   return (
     <form onSubmit={handleSubmit} className="p-4 space-y-4 max-w-96">
-      <label className="text-white">
+      <label className="text-gray-700">
         Email
         <input
           type="text"
           className="block w-full p-2 text-black border rounded bg-white"
-          name="title"
-          onChange={(e) => setTitle(e.target.value)}
+          name="email"
+          onChange={(e) => setEmail(e.target.value)}
         />
       </label>
-      <label className="text-white">
+      <label className="text-gray-700">
         пароль
         <input
           type="text"
           className="block w-full p-2 text-black border rounded bg-white"
-          name="price"
-          onChange={(e) => setPrice(e.target.value)}
+          name="password"
+          onChange={(e) => setPassword(e.target.value)}
         />
       </label>
-      <label className="text-white">
-        Описание
-        <textarea
+      <label className="text-gray-700">
+        имя не обязательно
+        <input
+          type="text"
           className="block w-full p-2 text-black border rounded bg-white"
-          name="description"
-          onChange={(e) => setDescription(e.target.value)}
+          name="name"
+          onChange={(e) => setName(e.target.value)}
         />
       </label>
       <button

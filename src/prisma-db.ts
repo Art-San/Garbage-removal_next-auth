@@ -25,26 +25,22 @@ export async function getUser(id: number) {
     where: { id }
   })
 }
-export async function addUser(
-  title: string,
-  price: number,
-  description: string
-) {
+export async function addUser(email: string, password: string, name: string) {
   await new Promise((resolve) => setTimeout(resolve, 1500))
   return prisma.user.create({
-    data: { title, price, description }
+    data: { email, password, name }
   })
 }
 export async function updateUser(
   id: number,
-  title: string,
-  price: number,
-  description: string
+  email: string,
+  password: string,
+  name: string
 ) {
   await new Promise((resolve) => setTimeout(resolve, 1500))
   return prisma.user.update({
     where: { id },
-    data: { title, price, description }
+    data: { email, password, name }
   })
 }
 export async function deleteUser(id: number) {
