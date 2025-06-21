@@ -1,7 +1,9 @@
 export default function Home() {
   return (
     <>
-      <main>Главная</main>
+      <main>
+        <h1>Главная</h1>
+      </main>
     </>
   )
 }
