@@ -14,6 +14,7 @@ import {
 import { Input } from '../ui/input'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
+import { appFetch } from '@/utils/api'
 
 const registerSchema = z
   .object({
@@ -34,6 +35,8 @@ const registerSchema = z
     message: 'Пароли не совпадают'
   })
 
+export type FormLoginData = z.infer<typeof registerSchema>
+
 export function RegisterForm() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
@@ -52,32 +55,41 @@ export function RegisterForm() {
   // const isPending = false
   // const errorMessage = undefined
 
-  async function onSubmit(values: z.infer<typeof registerSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    // console.log(123, values)
-
+  const onSubmit = async (data: FormLoginData) => {
     setLoading(true)
-    try {
-      const response = await fetch('/register/api', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: values.email, password: values.password })
+    await appFetch('api/register', { json: data })
+      .then(() => router.push('/login'))
+      .catch((error) => {
+        console.log(25, error)
+        setErrorMessage(error.message)
       })
-
-      if (!response.ok) {
-        setErrorMessage('Что то пошло не так')
-        router.push('/')
-      } else {
-        router.push('/users-db')
-      }
-    } catch (error) {
-      // setErrorMessage(error)
-      console.error(12, 'Error:', error)
-    } finally {
-      setLoading(false)
-    }
+      .finally(() => {
+        setLoading(false)
+      })
   }
+
+  // async function onSubmit(values: FormLoginData) {
+  //   setLoading(true)
+  //   try {
+  //     const response = await fetch('/register/api', {
+  //       method: 'POST',
+  //       headers: { 'Content-Type': 'application/json' },
+  //       body: JSON.stringify({ email: values.email, password: values.password })
+  //     })
+
+  //     if (!response.ok) {
+  //       setErrorMessage('Что то пошло не так')
+  //       router.push('/')
+  //     } else {
+  //       router.push('/users-db')
+  //     }
+  //   } catch (error) {
+  //     // setErrorMessage(error)
+  //     console.error(12, 'Error:', error)
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
 
   // const onSubmit = form.handleSubmit(register)
 

@@ -28,7 +28,8 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased max-h-screen flex flex-col justify-center bg-gray-50 dark:bg-gray-800 dark:text-white`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col justify-center bg-gray-50 dark:bg-gray-800 dark:text-white`}
+        // className={`${geistSans.variable} ${geistMono.variable} antialiased max-h-screen flex flex-col justify-center bg-gray-50 dark:bg-gray-800 dark:text-white`}
       >
         <main className="">{children}</main>
         {/* <main className="p-8">{children}</main> */}
