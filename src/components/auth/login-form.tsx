@@ -15,6 +15,7 @@ import {
 import { Input } from '../ui/input'
 import { appFetch } from '@/utils/api'
 import { useState } from 'react'
+import { generateToken } from '@/utils/jwt.util'
 
 const loginSchema = z.object({
   email: z
@@ -45,18 +46,49 @@ export function LoginForm() {
 
   async function onSubmit(data: FormLoginData) {
     setLoading(true)
-    await appFetch('api/login', { json: data })
-      .then((res) => {
-        localStorage.setItem('user', JSON.stringify(res))
-        router.push('/dashboard')
-      })
-      .catch((error) => {
-        setErrorMessage(error.message)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+    try {
+      const { token } = await appFetch('api/login', { json: data })
+      console.log(567, token)
+      if (token) {
+        localStorage.setItem('token', token)
+        // router.push('/dashboard')
+      } else {
+        throw new Error('token not generated')
+      }
+    } catch (error) {
+      let message = 'Неизвестная ошибка'
+
+      if (error instanceof Error) {
+        message = error.message
+      } else if (typeof error === 'string') {
+        message = error
+      }
+
+      setErrorMessage(message)
+    } finally {
+      setLoading(false)
+    }
   }
+
+  // async function onSubmit(data: FormLoginData) {
+  //   setLoading(true)
+  //   await appFetch('api/login', { json: data })
+  //     .then((user) => {
+  //       if (user) {
+  //         // const token = generateToken(user.id)
+  //         // localStorage.setItem('token', token)
+  //         router.push('/dashboard')
+  //       } else {
+  //         throw new Error('User not found')
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setErrorMessage(error.message)
+  //     })
+  //     .finally(() => {
+  //       setLoading(false)
+  //     })
+  // }
 
   // const { errorMessage, isPending, login } = useLogin()
   // const onSubmit = form.handleSubmit(login)
