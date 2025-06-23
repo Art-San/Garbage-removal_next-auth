@@ -1,14 +1,15 @@
 import prisma from './prisma-singleton'
-import { hashPassword } from './utils/hash.util'
+import { hashPassword, verifyPassword } from './utils/hash.util'
 
 // Заполнение БД тестовыми данными
 const seedUsers = async () => {
   const count = await prisma.user.count()
   if (count === 0) {
+    const hashedPassword = await hashPassword('123456')
     await prisma.user.createMany({
       data: [
-        { email: 'art@san.com', password: '123456', name: 'AtrSan' },
-        { email: 'san@art.ru', password: '123456', name: 'San-Art' }
+        { email: 'art@san.com', password: hashedPassword, name: 'AtrSan' },
+        { email: 'san@art.ru', password: hashedPassword, name: 'San-Art' }
       ]
     })
   }
@@ -17,7 +18,7 @@ seedUsers()
 
 // CRUD-операции
 export async function getUsers() {
-  await new Promise((resolve) => setTimeout(resolve, 2000))
+  // await new Promise((resolve) => setTimeout(resolve, 2000))
   return prisma.user.findMany()
 }
 
@@ -33,6 +34,27 @@ export async function addUser(email: string, password: string, name: string) {
   return prisma.user.create({
     data: { email, password, name }
   })
+}
+export async function loginUser(email: string, password: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email }
+    })
+
+    if (!user) {
+      throw Error('Не верный email или пароль')
+    }
+
+    const isValid = await verifyPassword(password, user.password)
+
+    if (!isValid) {
+      throw Error('Не верный email или пароль')
+    }
+
+    return user
+  } catch (err) {
+    throw err
+  }
 }
 export async function registerUser(email: string, password: string) {
   try {

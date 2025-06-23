@@ -3,51 +3,49 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { prisma } from '@/lib/prisma'
-import { hashPassword } from '@/utils/hash.util'
+import { verifyPassword } from '@/utils/hash.util'
 
-export default function RegisterPage() {
+export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const router = useRouter()
 
-  const handleRegister = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
 
     try {
-      // Проверка уникальности почты
-      const existingUser = await prisma.user.findUnique({
+      const user = await prisma.user.findUnique({
         where: { email }
       })
 
-      if (existingUser) {
-        setError('Пользователь с такой почтой уже существует')
+      if (!user) {
+        setError('Пользователь не найден')
         return
       }
 
-      // Хэширование пароля
-      const hashedPassword = await hashPassword(password)
+      const isValid = await verifyPassword(password, user.password)
 
-      // Создание пользователя
-      await prisma.user.create({
-        data: {
-          email,
-          password: hashedPassword
-        }
-      })
+      if (!isValid) {
+        setError('Неверный пароль')
+        return
+      }
 
-      router.push('/auth/login') // Перенаправление на авторизацию
+      // Здесь можно установить cookie или JWT, например
+      localStorage.setItem('user', JSON.stringify(user)) // Простой пример
+
+      router.push('/dashboard') // Перенаправление на защищённую страницу
     } catch (err) {
-      setError('Ошибка при регистрации')
+      setError('Ошибка при входе')
     }
   }
 
   return (
     <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded shadow">
-      <h1 className="text-2xl font-bold mb-4">Регистрация</h1>
+      <h1 className="text-2xl font-bold mb-4">Вход</h1>
       {error && <p className="text-red-500 mb-4">{error}</p>}
-      <form onSubmit={handleRegister}>
+      <form onSubmit={handleLogin}>
         <div className="mb-4">
           <label className="block text-gray-700 mb-2" htmlFor="email">
             Почта
@@ -76,9 +74,9 @@ export default function RegisterPage() {
         </div>
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+          className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
         >
-          Зарегистрироваться
+          Войти
         </button>
       </form>
     </div>

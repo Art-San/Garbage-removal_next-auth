@@ -25,6 +25,7 @@ export default function CreateUser() {
       setLoading(false)
     }
   }
+
   return (
     <form onSubmit={handleSubmit} className="p-4 space-y-4 max-w-96">
       <label className="text-gray-700">

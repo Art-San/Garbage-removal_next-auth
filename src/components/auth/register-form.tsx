@@ -35,7 +35,7 @@ const registerSchema = z
     message: 'Пароли не совпадают'
   })
 
-export type FormLoginData = z.infer<typeof registerSchema>
+export type FormRegisterData = z.infer<typeof registerSchema>
 
 export function RegisterForm() {
   const router = useRouter()
@@ -55,7 +55,7 @@ export function RegisterForm() {
   // const isPending = false
   // const errorMessage = undefined
 
-  const onSubmit = async (data: FormLoginData) => {
+  const onSubmit = async (data: FormRegisterData) => {
     setLoading(true)
     await appFetch('api/register', { json: data })
       .then(() => router.push('/login'))
@@ -68,7 +68,7 @@ export function RegisterForm() {
       })
   }
 
-  // async function onSubmit(values: FormLoginData) {
+  // async function onSubmit(values: FormRegisterData) {
   //   setLoading(true)
   //   try {
   //     const response = await fetch('/register/api', {
