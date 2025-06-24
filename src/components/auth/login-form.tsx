@@ -15,7 +15,6 @@ import {
 import { Input } from '../ui/input'
 import { appFetch } from '@/utils/api'
 import { useState } from 'react'
-import { generateToken } from '@/utils/jwt.util'
 
 const loginSchema = z.object({
   email: z
@@ -48,10 +47,11 @@ export function LoginForm() {
     setLoading(true)
     try {
       const { token } = await appFetch('api/login', { json: data })
-      console.log(567, token)
+
       if (token) {
-        localStorage.setItem('token', token)
-        // router.push('/dashboard')
+        document.cookie = `token=${token}; Path=/; Max-Age=3600;`
+        // localStorage.setItem('token', token)
+        router.push('/dashboard')
       } else {
         throw new Error('token not generated')
       }

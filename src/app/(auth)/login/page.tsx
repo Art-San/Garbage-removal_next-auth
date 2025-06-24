@@ -7,7 +7,7 @@ export default function LoginPage() {
     <>
       <AuthLayout
         form={<LoginForm />}
-        title="Вход в систему"
+        title="Вход в систему: art@san.com"
         description="Введите ваш email и пароль для входа в систему"
         footerText={
           <>
