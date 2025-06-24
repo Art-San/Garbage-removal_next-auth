@@ -49,8 +49,7 @@ export function LoginForm() {
       const { token } = await appFetch('api/login', { json: data })
 
       if (token) {
-        document.cookie = `token=${token}; Path=/; Max-Age=3600;`
-        // localStorage.setItem('token', token)
+        // document.cookie = `token=${token}; Path=/; Max-Age=3600;`
         router.push('/dashboard')
       } else {
         throw new Error('token not generated')
@@ -69,29 +68,6 @@ export function LoginForm() {
       setLoading(false)
     }
   }
-
-  // async function onSubmit(data: FormLoginData) {
-  //   setLoading(true)
-  //   await appFetch('api/login', { json: data })
-  //     .then((user) => {
-  //       if (user) {
-  //         // const token = generateToken(user.id)
-  //         // localStorage.setItem('token', token)
-  //         router.push('/dashboard')
-  //       } else {
-  //         throw new Error('User not found')
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       setErrorMessage(error.message)
-  //     })
-  //     .finally(() => {
-  //       setLoading(false)
-  //     })
-  // }
-
-  // const { errorMessage, isPending, login } = useLogin()
-  // const onSubmit = form.handleSubmit(login)
 
   return (
     <Form {...form}>
