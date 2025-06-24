@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     const token = generateToken(user.id) // Токен генерируется на сервере!
     cookieStore.set('token', token, {
-      httpOnly: true,
+      httpOnly: false,
       path: '/'
     })
     return Response.json({ token })

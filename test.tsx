@@ -1,31 +1,27 @@
+// app/middleware.ts
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
-export function middleware(req: NextRequest) {
-  const path = req.nextUrl.pathname
+export function middleware(request: NextRequest) {
+  // Проверяем, аутентифицирован ли пользователь (пример)
+  const isLoggedIn = checkAuthentication() // Замените на вашу логику аутентификации
 
-  // Защищённые маршруты
-  const isProtected = ['/dashboard'].includes(path)
-
-  if (isProtected) {
-    // Отправляем запрос на /api/check-auth
-    fetch('/api/check-auth', {
-      method: 'GET',
-      headers: {
-        Cookie: req.headers.get('cookie') || ''
-      }
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (!data.user) {
-          return NextResponse.redirect(new URL('/auth/login', req.url))
-        }
-      })
+  if (!isLoggedIn) {
+    // Если пользователь не аутентифицирован, перенаправляем на страницу входа
+    return NextResponse.redirect(new URL('/login', request.url))
   }
 
+  // Если пользователь аутентифицирован, разрешаем доступ к маршруту
   return NextResponse.next()
 }
 
+// Функция для проверки аутентификации (пример)
+function checkAuthentication(): boolean {
+  // Здесь ваша логика аутентификации (например, проверка токена в куках)
+  return false // Замените на вашу реальную логику
+}
+
+// Указываем, какие маршруты нужно защитить
 export const config = {
-  matcher: ['/dashboard']
+  matcher: ['/protected/:path*'] // Защищает все маршруты в /protected
 }
