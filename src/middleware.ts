@@ -9,8 +9,6 @@ export function middleware(req: NextRequest) {
 
   const token = req.cookies.get('token')?.value
 
-  console.log(1, token)
-
   if (isProtected && !token) {
     return NextResponse.redirect(new URL('/login', req.url))
   }
