@@ -46,13 +46,13 @@ export function LoginForm() {
   async function onSubmit(data: FormLoginData) {
     setLoading(true)
     try {
-      const { token } = await appFetch('api/login', { json: data })
+      const { user } = await appFetch('api/login', { json: data })
 
-      if (token) {
+      if (user) {
         // document.cookie = `token=${token}; Path=/; Max-Age=3600;`
         router.push('/dashboard')
       } else {
-        throw new Error('token not generated')
+        throw new Error('LoginForm: not user')
       }
     } catch (error) {
       let message = 'Неизвестная ошибка'

@@ -1,3 +1,4 @@
+import { createSession } from '@/lib/session'
 import { loginUser } from '@/prisma-db'
 import { generateToken } from '@/utils/jwt.util'
 
@@ -29,12 +30,13 @@ export async function POST(request: Request) {
     const user = await loginUser(email, password)
     if (!user) throw new Error('User not found')
 
-    const token = generateToken(user.id) // Токен генерируется на сервере!
+    await createSession(String(user.id), 'admin')
+    const token = generateToken(user.id)
     cookieStore.set('token', token, {
-      httpOnly: false,
-      path: '/'
+      // httpOnly: false,
+      // path: '/'
     })
-    return Response.json({ token })
+    return Response.json({ user })
   } catch (error) {
     return Response.json(
       { error: error instanceof Error ? error.message : 'Login failed' },
