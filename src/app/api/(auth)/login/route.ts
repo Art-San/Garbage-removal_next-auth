@@ -8,7 +8,7 @@ export async function POST(request: Request) {
     const user = await loginUser(email, password)
     if (!user) throw new Error('User not found')
 
-    await createSession(String(user.id), 'admin')
+    await createSession(String(user.id), user.role)
 
     return Response.json({ user })
   } catch (error) {
