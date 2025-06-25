@@ -1,27 +1,39 @@
-// app/middleware.ts
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
+import { type NextRequest, NextResponse } from 'next/server'
+import { decrypt } from '@/lib/session'
+import { cookies } from 'next/headers'
 
-export function middleware(request: NextRequest) {
-  // Проверяем, аутентифицирован ли пользователь (пример)
-  const isLoggedIn = checkAuthentication() // Замените на вашу логику аутентификации
+// 1. Specify protected and public routes
+const protectedRoutes = ['/dashboard', '/profile', '/settings']
+const publicRoutes = ['/login', '/signup', '/']
 
-  if (!isLoggedIn) {
-    // Если пользователь не аутентифицирован, перенаправляем на страницу входа
-    return NextResponse.redirect(new URL('/login', request.url))
+export default async function middleware(req: NextRequest) {
+  // 2. Check if the current route is protected or public
+  const path = req.nextUrl.pathname
+  const isProtectedRoute = protectedRoutes.includes(path)
+  const isPublicRoute = publicRoutes.includes(path)
+
+  // 3. Decrypt the session from the cookie
+  const cookie = (await cookies()).get('session')?.value
+  const session = await decrypt(cookie)
+
+  // 4. Redirect to /login if the user is not authenticated
+  if (isProtectedRoute && !session?.userId) {
+    return NextResponse.redirect(new URL('/login', req.nextUrl))
   }
 
-  // Если пользователь аутентифицирован, разрешаем доступ к маршруту
+  // 5. Redirect to /dashboard if the user is authenticated
+  if (
+    isPublicRoute &&
+    session?.userId &&
+    !req.nextUrl.pathname.startsWith('/dashboard')
+  ) {
+    return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
+  }
+
   return NextResponse.next()
 }
 
-// Функция для проверки аутентификации (пример)
-function checkAuthentication(): boolean {
-  // Здесь ваша логика аутентификации (например, проверка токена в куках)
-  return false // Замените на вашу реальную логику
-}
-
-// Указываем, какие маршруты нужно защитить
+// Routes Middleware should not run on
 export const config = {
-  matcher: ['/protected/:path*'] // Защищает все маршруты в /protected
+  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)']
 }
