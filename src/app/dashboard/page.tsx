@@ -1,6 +1,6 @@
 'use client'
 import { appFetch } from '@/utils/api'
-import { getCookie } from '@/utils/get-cookie.util'
+// import { getCookie } from '@/utils/get-cookie.util'
 import { useEffect, useState } from 'react'
 
 type User = {
@@ -14,17 +14,18 @@ export default function Dashboard() {
   const [errorMessage, setErrorMessage] = useState('')
   async function fetchData() {
     try {
-      const session = getCookie('session')
-      console.log(67, session)
-      // const response = await fetch('/api/check-auth')
+      // const session = getCookie('session')
+      // console.log(67, session)
 
-      const response = await fetch('/api/check-auth', {
-        headers: {
-          Authorization: `Bearer ${session}`
-        }
-      })
+      const { message } = await appFetch('/api/check-auth')
 
-      if (response.ok) {
+      // const response = await fetch('/api/check-auth', {
+      //   headers: {
+      //     Authorization: `Bearer ${session}`
+      //   }
+      // })
+
+      if (message === 'Authorized') {
         const data = await appFetch('api/dashboard')
         setUsers(data)
       }
@@ -36,8 +37,6 @@ export default function Dashboard() {
       } else {
         setErrorMessage('Произошла неизвестная ошибка')
       }
-      // console.log(34, error.message)
-      // setErrorMessage(error.message)
     }
   }
 

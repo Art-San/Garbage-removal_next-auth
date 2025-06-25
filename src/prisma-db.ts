@@ -30,10 +30,30 @@ export async function getUser(id: number) {
 }
 
 export async function addUser(email: string, password: string, name: string) {
-  await new Promise((resolve) => setTimeout(resolve, 1500))
-  return prisma.user.create({
-    data: { email, password, name }
-  })
+  try {
+    // Проверка уникальности почты
+    const existingUser = await prisma.user.findUnique({
+      where: { email }
+    })
+
+    if (existingUser) {
+      throw Error('Email занят')
+    }
+
+    // Хэширование пароля
+    const hashedPassword = await hashPassword(password)
+
+    // Создание пользователя
+    return await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        name: name || 'No name'
+      }
+    })
+  } catch (err) {
+    throw err
+  }
 }
 export async function loginUser(email: string, password: string) {
   try {
@@ -71,13 +91,15 @@ export async function registerUser(email: string, password: string) {
     const hashedPassword = await hashPassword(password)
 
     // Создание пользователя
-    return await prisma.user.create({
+    const newUser = await prisma.user.create({
       data: {
         email,
         password: hashedPassword,
         name: email
       }
     })
+    console.log(890, newUser)
+    return newUser
   } catch (err) {
     throw err
   }

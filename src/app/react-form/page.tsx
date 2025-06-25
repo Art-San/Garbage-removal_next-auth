@@ -35,6 +35,7 @@ export default function CreateUser() {
           className="block w-full p-2 text-black border rounded bg-white"
           name="email"
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
       </label>
       <label className="text-gray-700">
@@ -44,6 +45,7 @@ export default function CreateUser() {
           className="block w-full p-2 text-black border rounded bg-white"
           name="password"
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
       </label>
       <label className="text-gray-700">

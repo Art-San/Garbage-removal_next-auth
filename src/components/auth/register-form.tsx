@@ -13,7 +13,7 @@ import {
 } from '../ui/form'
 import { Input } from '../ui/input'
 import { useForm } from 'react-hook-form'
-import { useState } from 'react'
+import { use, useState } from 'react'
 import { appFetch } from '@/utils/api'
 
 const registerSchema = z
@@ -50,52 +50,37 @@ export function RegisterForm() {
     }
   })
 
-  // const { register, isPending, errorMessage } = useRegister()
-
-  // const isPending = false
-  // const errorMessage = undefined
-
-  const onSubmit = async (data: FormRegisterData) => {
+  async function onSubmit(data: FormRegisterData) {
     setLoading(true)
-    await appFetch('api/register', { json: data })
-      .then(() => router.push('/login'))
-      .catch((error) => {
-        console.log(25, error)
-        setErrorMessage(error.message)
-      })
-      .finally(() => {
-        setLoading(false)
-      })
+    try {
+      const { user } = await appFetch('api/register', { json: data })
+
+      if (user.id) {
+        router.push('/users-db')
+      } else {
+        setErrorMessage('Что то пошло не так')
+        // router.push('/')
+      }
+    } catch (error) {
+      let message = 'Неизвестная ошибка'
+
+      if (error instanceof Error) {
+        message = error.message
+      } else if (typeof error === 'string') {
+        message = error
+      }
+
+      setErrorMessage(message)
+    } finally {
+      setLoading(false)
+    }
   }
 
-  // async function onSubmit(values: FormRegisterData) {
-  //   setLoading(true)
-  //   try {
-  //     const response = await fetch('/register/api', {
-  //       method: 'POST',
-  //       headers: { 'Content-Type': 'application/json' },
-  //       body: JSON.stringify({ email: values.email, password: values.password })
-  //     })
-
-  //     if (!response.ok) {
-  //       setErrorMessage('Что то пошло не так')
-  //       router.push('/')
-  //     } else {
-  //       router.push('/users-db')
-  //     }
-  //   } catch (error) {
-  //     // setErrorMessage(error)
-  //     console.error(12, 'Error:', error)
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
-
+  // const { register, isPending, errorMessage } = useRegister()
   // const onSubmit = form.handleSubmit(register)
 
   return (
     <Form {...form}>
-      {/* <form className=" flex flex-col gap-4"> */}
       <form
         className=" flex flex-col gap-4"
         onSubmit={form.handleSubmit(onSubmit)}

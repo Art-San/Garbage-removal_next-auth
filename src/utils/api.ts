@@ -36,6 +36,8 @@ export const appFetch = async (url: string, options?: { json?: unknown }) => {
 
   const data = await response.json()
 
+  console.log('data', 345, data)
+
   if (!response.ok) {
     throw new Error(data.error || 'Ошибка запроса')
   }

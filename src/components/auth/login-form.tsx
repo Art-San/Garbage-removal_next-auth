@@ -48,7 +48,7 @@ export function LoginForm() {
     try {
       const { user } = await appFetch('api/login', { json: data })
 
-      if (user) {
+      if (user.id) {
         // document.cookie = `token=${token}; Path=/; Max-Age=3600;`
         router.push('/dashboard')
       } else {
