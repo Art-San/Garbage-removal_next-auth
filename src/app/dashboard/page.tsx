@@ -14,13 +14,13 @@ export default function Dashboard() {
   const [errorMessage, setErrorMessage] = useState('')
   async function fetchData() {
     try {
-      const token = getCookie('token')
-      console.log(67, token)
+      const session = getCookie('session')
+      console.log(67, session)
       // const response = await fetch('/api/check-auth')
 
       const response = await fetch('/api/check-auth', {
         headers: {
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${session}`
         }
       })
 
