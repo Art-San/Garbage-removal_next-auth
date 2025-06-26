@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
   }
 
   const decoded = await decrypt(session)
-  console.log(567, 'check-auth', decoded)
+  // console.log(567, 'check-auth', decoded)
 
   if (!decoded) {
     return NextResponse.json({ error: 'Invalid token' }, { status: 401 })

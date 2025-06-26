@@ -98,7 +98,7 @@ export async function registerUser(email: string, password: string) {
         name: email
       }
     })
-    console.log(890, newUser)
+
     return newUser
   } catch (err) {
     throw err

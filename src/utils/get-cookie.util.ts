@@ -6,6 +6,6 @@ export function getCookie(name: string) {
         '=([^;]*)'
     )
   )
-  console.log(68, matches)
+
   return matches ? decodeURIComponent(matches[1]) : undefined
 }
