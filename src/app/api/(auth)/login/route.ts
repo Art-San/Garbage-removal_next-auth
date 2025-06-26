@@ -1,4 +1,4 @@
-import { createSession } from '@/lib/session'
+import { createRefreshToken, createSession } from '@/lib/session'
 import { loginUser } from '@/prisma-db'
 
 export async function POST(request: Request) {
@@ -9,6 +9,7 @@ export async function POST(request: Request) {
     if (!user) throw new Error('User not found')
 
     await createSession(String(user.id), user.role)
+    await createRefreshToken(String(user.id))
 
     return Response.json({ user })
   } catch (error) {
