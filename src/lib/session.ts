@@ -46,6 +46,22 @@ export async function createSession(userId: string, role?: string) {
   })
 }
 
+export async function createRefreshToken(userId: string) {
+  const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 дней
+  const refreshToken = await encrypt({ userId, expiresAt })
+
+  const cookieStore = await cookies()
+  cookieStore.set('refresh_token', refreshToken, {
+    httpOnly: true,
+    secure: true,
+    expires: expiresAt,
+    sameSite: 'lax',
+    path: '/'
+  })
+
+  return refreshToken
+}
+
 export async function deleteSession() {
   const cookieStore = await cookies()
   cookieStore.delete('session')
