@@ -14,7 +14,7 @@ import {
 } from '../ui/form'
 import { Input } from '../ui/input'
 import { appFetch } from '@/utils/api'
-import { useState } from 'react'
+import { use, useState } from 'react'
 
 const loginSchema = z.object({
   email: z
@@ -46,11 +46,12 @@ export function LoginForm() {
   async function onSubmit(data: FormLoginData) {
     setLoading(true)
     try {
-      const { user } = await appFetch('api/login', { json: data })
-
+      const { user, accessToken } = await appFetch('api/login', { json: data })
+      console.log(12, user)
+      console.log(12, accessToken)
       if (user.id) {
         // document.cookie = `token=${token}; Path=/; Max-Age=3600;`
-        router.push('/dashboard')
+        // router.push('/dashboard')
       } else {
         throw new Error('LoginForm: not user')
       }

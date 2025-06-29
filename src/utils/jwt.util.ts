@@ -1,16 +1,16 @@
-import jwt from 'jsonwebtoken'
+// import jwt from 'jsonwebtoken'
 
-const SECRET_KEY = process.env.JWT_SECRET || 'your-secret-key'
+// const SECRET_KEY = process.env.JWT_SECRET || 'your-secret-key'
 
-export const generateToken = (userId: number) => {
-  return jwt.sign({ userId }, SECRET_KEY, { expiresIn: '1h' })
-}
+// export const generateToken = (userId: number) => {
+//   return jwt.sign({ userId }, SECRET_KEY, { expiresIn: '1h' })
+// }
 
-export const verifyToken = (token: string) => {
-  try {
-    return jwt.verify(token, SECRET_KEY)
-  } catch (error) {
-    // console.log(123, 'verifyToken', error)
-    return null
-  }
-}
+// export const verifyToken = (token: string) => {
+//   try {
+//     return jwt.verify(token, SECRET_KEY)
+//   } catch (error) {
+//     // console.log(123, 'verifyToken', error)
+//     return null
+//   }
+// }
