@@ -8,13 +8,13 @@ export const publicFetchClient = createFetchClient({
   baseUrl: CONFIG.API_BASE_URL
 })
 
-// export const publicRqClient = createClient(publicFetchClient)
+export const publicRqClient = createClient(publicFetchClient)
 
 export const fetchClient = createFetchClient({
   baseUrl: CONFIG.API_BASE_URL
 })
 
-// export const rqClient = createClient(fetchClient)
+export const rqClient = createClient(fetchClient)
 
 fetchClient.use({
   async onRequest({ request }) {

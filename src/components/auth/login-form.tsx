@@ -2,7 +2,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import { Button } from '../ui/button'
 import {
   Form,
@@ -13,8 +13,9 @@ import {
   FormMessage
 } from '../ui/form'
 import { Input } from '../ui/input'
-import { appFetch } from '@/utils/api'
-import { use, useState } from 'react'
+// import { appFetch } from '@/utils/api'
+// import { useState } from 'react'
+import { useLogin } from './hooks/use-login'
 
 const loginSchema = z.object({
   email: z
@@ -32,9 +33,9 @@ const loginSchema = z.object({
 export type FormLoginData = z.infer<typeof loginSchema>
 
 export function LoginForm() {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
+  // const router = useRouter()
+  // const [loading, setLoading] = useState(false)
+  // const [errorMessage, setErrorMessage] = useState('')
   const form = useForm<FormLoginData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -43,31 +44,37 @@ export function LoginForm() {
     }
   })
 
+  // async function onSubmit(data: FormLoginData) {
+  //   setLoading(true)
+  //   try {
+  //     const { user, accessToken } = await appFetch('api/login', { json: data })
+  //     console.log(12, user)
+  //     console.log(12, accessToken)
+  //     if (user.id) {
+  //       // document.cookie = `token=${token}; Path=/; Max-Age=3600;`
+  //       // router.push('/dashboard')
+  //     } else {
+  //       throw new Error('LoginForm: not user')
+  //     }
+  //   } catch (error) {
+  //     let message = 'Неизвестная ошибка'
+
+  //     if (error instanceof Error) {
+  //       message = error.message
+  //     } else if (typeof error === 'string') {
+  //       message = error
+  //     }
+
+  //     setErrorMessage(message)
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
+
+  const { errorMessage, isPending, login } = useLogin()
+
   async function onSubmit(data: FormLoginData) {
-    setLoading(true)
-    try {
-      const { user, accessToken } = await appFetch('api/login', { json: data })
-      console.log(12, user)
-      console.log(12, accessToken)
-      if (user.id) {
-        // document.cookie = `token=${token}; Path=/; Max-Age=3600;`
-        // router.push('/dashboard')
-      } else {
-        throw new Error('LoginForm: not user')
-      }
-    } catch (error) {
-      let message = 'Неизвестная ошибка'
-
-      if (error instanceof Error) {
-        message = error.message
-      } else if (typeof error === 'string') {
-        message = error
-      }
-
-      setErrorMessage(message)
-    } finally {
-      setLoading(false)
-    }
+    login(data)
   }
 
   return (
@@ -108,7 +115,8 @@ export function LoginForm() {
           <p className="text-destructive text-sm">{errorMessage}</p>
         )}
 
-        <Button disabled={loading} type="submit">
+        <Button disabled={isPending} type="submit">
+          {/* <Button disabled={loading} type="submit"> */}
           Войти
         </Button>
       </form>
