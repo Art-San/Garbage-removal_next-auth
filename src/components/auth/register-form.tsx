@@ -1,7 +1,6 @@
 'use client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useRouter } from 'next/navigation'
 import { Button } from '../ui/button'
 import {
   Form,
@@ -13,8 +12,8 @@ import {
 } from '../ui/form'
 import { Input } from '../ui/input'
 import { useForm } from 'react-hook-form'
-import { use, useState } from 'react'
-import { appFetch } from '@/utils/api'
+
+import { useRegister } from './hooks/use-register'
 
 const registerSchema = z
   .object({
@@ -38,9 +37,6 @@ const registerSchema = z
 export type FormRegisterData = z.infer<typeof registerSchema>
 
 export function RegisterForm() {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [errorMessage, setErrorMessage] = useState('')
   const form = useForm({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -50,34 +46,11 @@ export function RegisterForm() {
     }
   })
 
+  const { register, isPending, errorMessage } = useRegister()
+
   async function onSubmit(data: FormRegisterData) {
-    setLoading(true)
-    try {
-      const { user } = await appFetch('api/register', { json: data })
-
-      if (user.id) {
-        router.push('/users-db')
-      } else {
-        setErrorMessage('Что то пошло не так')
-        // router.push('/')
-      }
-    } catch (error) {
-      let message = 'Неизвестная ошибка'
-
-      if (error instanceof Error) {
-        message = error.message
-      } else if (typeof error === 'string') {
-        message = error
-      }
-
-      setErrorMessage(message)
-    } finally {
-      setLoading(false)
-    }
+    register(data)
   }
-
-  // const { register, isPending, errorMessage } = useRegister()
-  // const onSubmit = form.handleSubmit(register)
 
   return (
     <Form {...form}>
@@ -132,7 +105,8 @@ export function RegisterForm() {
           <p className="text-destructive text-sm">{errorMessage}</p>
         )}
 
-        <Button disabled={loading} type="submit">
+        <Button disabled={isPending} type="submit">
+          {/* <Button disabled={loading} type="submit"> */}
           Зарегистрироваться
         </Button>
       </form>

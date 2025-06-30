@@ -1,24 +1,32 @@
 'use client'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
+import { useLogout } from './auth/hooks/use-logout'
 
 export default function Header() {
-  const router = useRouter()
+  const { logout, isPending } = useLogout()
 
-  const handleLogout = async () => {
-    try {
-      const response = await fetch('/api/logout', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+  // const router = useRouter()
 
-      if (response.ok) {
-        router.push('/login')
-      }
-    } catch (error) {
-      console.error('Logout failed:', error)
-    }
+  // const handleLogout = async () => {
+  //   try {
+  //     const response = await fetch('/api/logout', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json'
+  //       }
+  //     })
+
+  //     if (response.ok) {
+  //       router.push('/login')
+  //     }
+  //   } catch (error) {
+  //     console.error('Logout failed:', error)
+  //   }
+  // }
+
+  async function onSubmit() {
+    localStorage.removeItem('token')
+    logout()
   }
   return (
     <header className="p-4 bg-gray-800 text-white">
@@ -26,7 +34,9 @@ export default function Header() {
         <h1>Дашборд</h1>
 
         <button
-          onClick={handleLogout}
+          onClick={onSubmit}
+          // onClick={() => logout()}
+          disabled={isPending}
           className="px-4 py-2 mt-4 text-white bg-red-500 hover:bg-red-800 rounded-md cursor-pointer"
         >
           выйти

@@ -4,7 +4,8 @@ import { cookies } from 'next/headers'
 const secretKey = process.env.SESSION_SECRET || 'fallback-secret-key'
 
 const JWT_SECRET = new TextEncoder().encode(secretKey)
-const ACCESS_TOKEN_EXPIRY = '3s'
+// const ACCESS_TOKEN_EXPIRY = '5s'
+const ACCESS_TOKEN_EXPIRY = '1d'
 const REFRESH_TOKEN_EXPIRY = '7d'
 
 export interface SessionPayload {

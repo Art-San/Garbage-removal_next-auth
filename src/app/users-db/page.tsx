@@ -11,6 +11,8 @@ export default async function UsersPrismaDBPage() {
 
   return (
     <ul className="space-y-4 p-4">
+      <h1>Все юзеры из базы</h1>
+      <p>Серверный компонент</p>
       {users.map((user) => (
         <li
           key={user.id}

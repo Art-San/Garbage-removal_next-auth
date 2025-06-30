@@ -1,55 +1,17 @@
 'use client'
-import { appFetch } from '@/utils/api'
-// import { getCookie } from '@/utils/get-cookie.util'
-import { useEffect, useState } from 'react'
+import { useServices } from '@/hooks/useServices'
 
-type User = {
-  id: number
-  email: string
-  password: string
-  name: string | null
-}
 export default function Dashboard() {
-  const [users, setUsers] = useState<User[]>([])
-  const [errorMessage, setErrorMessage] = useState('')
-  async function fetchData() {
-    try {
-      // const session = getCookie('session')
-      // console.log(67, session)
+  const { data, errorMessage } = useServices()
 
-      const { message } = await appFetch('/api/check-auth')
-
-      // const response = await fetch('/api/check-auth', {
-      //   headers: {
-      //     Authorization: `Bearer ${session}`
-      //   }
-      // })
-
-      if (message === 'Authorized') {
-        const data = await appFetch('api/dashboard')
-        setUsers(data)
-      }
-
-      // const data = await appFetch('api/check-auth')
-    } catch (error) {
-      if (error instanceof Error) {
-        setErrorMessage(error.message)
-      } else {
-        setErrorMessage('Произошла неизвестная ошибка')
-      }
-    }
-  }
-
-  useEffect(() => {
-    fetchData()
-  }, [])
+  console.log(777, data)
   return (
     <div>
       <h1>Dashboard</h1>
 
-      {users && (
+      {data && (
         <ul className="space-y-4 p-4">
-          {users.map((user) => (
+          {data.map((user) => (
             <li
               key={user.id}
               className="p-4 bg-gray-100 shadow-md rounded-lg text-gray-700"
