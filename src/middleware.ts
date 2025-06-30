@@ -16,17 +16,17 @@ export default async function middleware(req: NextRequest) {
   const session = await decrypt(cookie)
   console.log(45, 'CONFIG', CONFIG.API_BASE_URL)
   console.log(567, 'session', session)
-  // if (isProtectedRoute && !session?.userId) {
-  //   return NextResponse.redirect(new URL('/login', req.nextUrl))
-  // }
+  if (isProtectedRoute && !session?.userId) {
+    return NextResponse.redirect(new URL('/login', req.nextUrl))
+  }
 
-  // if (
-  //   isPublicRoute &&
-  //   session?.userId &&
-  //   !req.nextUrl.pathname.startsWith('/dashboard')
-  // ) {
-  //   return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
-  // }
+  if (
+    isPublicRoute &&
+    session?.userId &&
+    !req.nextUrl.pathname.startsWith('/dashboard')
+  ) {
+    return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
+  }
 
   return NextResponse.next()
 }
