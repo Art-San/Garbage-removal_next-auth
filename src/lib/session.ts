@@ -13,7 +13,7 @@ export interface SessionPayload {
   role?: string
 }
 
-export async function generateTokens(session: SessionPayload) {
+export async function generateTokens(session: any) {
   const accessToken = await new SignJWT(session)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
@@ -44,7 +44,7 @@ export async function decrypt(session: string | undefined = '') {
     const { payload } = await jwtVerify(session, JWT_SECRET, {
       algorithms: ['HS256']
     })
-    return payload as SessionPayload
+    return payload
   } catch (error) {
     console.log('Failed to verify session')
     return null
