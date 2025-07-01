@@ -4,7 +4,6 @@ import { useServices } from '@/hooks/useServices'
 export default function Dashboard() {
   const { data, errorMessage } = useServices()
 
-  console.log(777, data)
   return (
     <div>
       <h1>Dashboard</h1>

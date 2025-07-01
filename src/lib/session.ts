@@ -80,6 +80,10 @@ export async function createRefreshToken(userId: string, role: string) {
   return refreshToken
 }
 
+// export async function createRefreshAccessToken(userId: string, role: string) {
+
+// }
+
 export async function deleteSession() {
   const cookieStore = await cookies()
   cookieStore.delete('session')
