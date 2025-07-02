@@ -10,10 +10,18 @@ const REFRESH_TOKEN_EXPIRY = '7d'
 
 export interface SessionPayload {
   userId: string
-  role?: string
+  email?: string
+}
+type Session = {
+  userId: string
+  email: string
 }
 
-export async function generateTokens(session: any) {
+export function createRefreshTokenCookie(refreshToken: string) {
+  return `refresh_token=${refreshToken}; Max-Age=604800`
+}
+
+export async function generateTokens(session: Session) {
   const accessToken = await new SignJWT(session)
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
@@ -46,13 +54,13 @@ export async function decrypt(session: string | undefined = '') {
     })
     return payload
   } catch (error) {
-    console.log('Failed to verify session')
+    console.log('Failed to verify session', error)
     return null
   }
 }
 
-export async function createSession(userId: string, role?: string) {
-  const { accessToken: session } = await generateTokens({ userId, role })
+export async function createSession(userId: string, email: string) {
+  const { accessToken: session } = await generateTokens({ userId, email })
 
   const cookieStore = await cookies()
   cookieStore.set('session', session, {
@@ -65,8 +73,8 @@ export async function createSession(userId: string, role?: string) {
   return session
 }
 
-export async function createRefreshToken(userId: string, role: string) {
-  const { refreshToken } = await generateTokens({ userId, role })
+export async function createRefreshToken(userId: string, email: string) {
+  const { refreshToken } = await generateTokens({ userId, email })
 
   const cookieStore = await cookies()
   cookieStore.set('refresh_token', refreshToken, {
@@ -80,7 +88,7 @@ export async function createRefreshToken(userId: string, role: string) {
   return refreshToken
 }
 
-// export async function createRefreshAccessToken(userId: string, role: string) {
+// export async function createRefreshAccessToken(userId: string, email: string) {
 
 // }
 

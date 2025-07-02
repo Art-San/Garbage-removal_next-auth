@@ -16,9 +16,9 @@ type User = {
 export function useServices() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['services'],
-    queryFn: () => appFetch('api/services')
+    queryFn: () => appFetch('api/services'),
     // queryFn: () => fetch('api/dashboard'),
-    // select: (data) => data.data
+    select: (data) => data.data
   })
 
   const [services, setServices] = useState<User[]>(data)

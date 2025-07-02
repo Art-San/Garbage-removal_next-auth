@@ -1,12 +1,12 @@
 import { useMutation } from '@tanstack/react-query'
 import { useSession } from '@/model/session'
-import { useRouter } from 'next/navigation'
+// import { useRouter } from 'next/navigation'
 import { appFetch } from '@/utils/api'
 import { FormLoginData } from '../login-form'
 
 export function useRegister() {
   const session = useSession()
-  const router = useRouter()
+  // const router = useRouter()
 
   const {
     mutate: register,
@@ -20,7 +20,7 @@ export function useRegister() {
 
     onSuccess(data) {
       session.login(data.accessToken)
-      router.push('/dashboard')
+      // router.push('/dashboard')
     },
     onError: (error) => {
       console.error('Произошла ошибка при входе:', error)
