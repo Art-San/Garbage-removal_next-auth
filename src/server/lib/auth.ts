@@ -8,8 +8,8 @@ const secretKey = process.env.SESSION_SECRET || 'fallback-secret-key'
 const JWT_SECRET = new TextEncoder().encode(secretKey)
 
 // Генерация accessToken (15 мин)
-export async function createAccessToken(userId: string) {
-  return await new SignJWT({ userId })
+export async function createAccessToken(userId: string, email: string) {
+  return await new SignJWT({ userId, email })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('15m')
@@ -17,8 +17,8 @@ export async function createAccessToken(userId: string) {
 }
 
 // Генерация refreshToken (7 дней) + сохранение в куки
-export async function createRefreshToken(userId: string) {
-  const refreshToken = await new SignJWT({ userId })
+export async function createRefreshToken(userId: string, email: string) {
+  const refreshToken = await new SignJWT({ userId, email })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('7d')

@@ -8,8 +8,8 @@ export async function POST(request: Request) {
     const user = await loginUser(email, password)
     if (!user) throw new Error('User not found')
 
-    const accessToken = await createAccessToken(String(user.id))
-    await createRefreshToken(String(user.id))
+    const accessToken = await createAccessToken(String(user.id), user.email)
+    await createRefreshToken(String(user.id), user.email)
 
     return Response.json({ accessToken, user })
   } catch (error) {

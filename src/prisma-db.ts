@@ -23,10 +23,19 @@ export async function getUsers() {
 }
 
 export async function getUser(id: number) {
-  await new Promise((resolve) => setTimeout(resolve, 1500))
-  return prisma.user.findUnique({
-    where: { id }
-  })
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id }
+    })
+
+    if (!user) {
+      throw new Error('Не такого пользователя')
+    }
+
+    return user
+  } catch (err) {
+    throw err
+  }
 }
 
 export async function addUser(email: string, password: string, name: string) {
