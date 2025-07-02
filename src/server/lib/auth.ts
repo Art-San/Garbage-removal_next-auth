@@ -2,22 +2,27 @@ import { updateUserRefreshToken } from '@/prisma-db'
 import { SignJWT, jwtVerify, type JWTPayload } from 'jose'
 import { cookies } from 'next/headers'
 
-const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET!)
+// const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET!)
+const secretKey = process.env.SESSION_SECRET || 'fallback-secret-key'
+
+const JWT_SECRET = new TextEncoder().encode(secretKey)
 
 // Генерация accessToken (15 мин)
 export async function createAccessToken(userId: string) {
   return await new SignJWT({ userId })
     .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
     .setExpirationTime('15m')
-    .sign(SECRET_KEY)
+    .sign(JWT_SECRET)
 }
 
 // Генерация refreshToken (7 дней) + сохранение в куки
 export async function createRefreshToken(userId: string) {
   const refreshToken = await new SignJWT({ userId })
     .setProtectedHeader({ alg: 'HS256' })
+    .setIssuedAt()
     .setExpirationTime('7d')
-    .sign(SECRET_KEY)
+    .sign(JWT_SECRET)
 
   // Сохраняем refreshToken в БД
   await updateUserRefreshToken(+userId, refreshToken)
@@ -41,7 +46,7 @@ export async function createRefreshToken(userId: string) {
 // Валидация токена
 export async function verifyToken(token: string) {
   try {
-    const { payload } = await jwtVerify(token, SECRET_KEY)
+    const { payload } = await jwtVerify(token, JWT_SECRET)
     return payload as JWTPayload & { userId: string }
   } catch {
     return null

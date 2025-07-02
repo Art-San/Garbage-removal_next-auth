@@ -44,33 +44,6 @@ export function LoginForm() {
     }
   })
 
-  // async function onSubmit(data: FormLoginData) {
-  //   setLoading(true)
-  //   try {
-  //     const { user, accessToken } = await appFetch('api/login', { json: data })
-  //     console.log(12, user)
-  //     console.log(12, accessToken)
-  //     if (user.id) {
-  //       // document.cookie = `token=${token}; Path=/; Max-Age=3600;`
-  //       // router.push('/dashboard')
-  //     } else {
-  //       throw new Error('LoginForm: not user')
-  //     }
-  //   } catch (error) {
-  //     let message = 'Неизвестная ошибка'
-
-  //     if (error instanceof Error) {
-  //       message = error.message
-  //     } else if (typeof error === 'string') {
-  //       message = error
-  //     }
-
-  //     setErrorMessage(message)
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
-
   const { errorMessage, isPending, login } = useLogin()
 
   async function onSubmit(data: FormLoginData) {

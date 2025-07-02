@@ -1,4 +1,4 @@
-import { SignJWT, jwtVerify } from 'jose'
+import { SignJWT, jwtVerify, type JWTPayload } from 'jose'
 import { cookies } from 'next/headers'
 
 const secretKey = process.env.SESSION_SECRET || 'fallback-secret-key'
@@ -52,7 +52,7 @@ export async function decrypt(session: string | undefined = '') {
     const { payload } = await jwtVerify(session, JWT_SECRET, {
       algorithms: ['HS256']
     })
-    return payload
+    return payload as JWTPayload & { userId: string }
   } catch (error) {
     console.log('Failed to verify session', error)
     return null

@@ -125,9 +125,9 @@ export async function deleteUser(id: number) {
   })
 }
 
-export async function updateUserRefreshToken(id: number, name: string) {
+export async function updateUserRefreshToken(id: number, refreshToken: string) {
   return await prisma.user.update({
     where: { id: id },
-    data: { name }
+    data: { refreshToken }
   })
 }
