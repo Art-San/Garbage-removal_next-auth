@@ -124,3 +124,10 @@ export async function deleteUser(id: number) {
     where: { id }
   })
 }
+
+export async function updateUserRefreshToken(id: number, name: string) {
+  return await prisma.user.update({
+    where: { id: id },
+    data: { name }
+  })
+}
