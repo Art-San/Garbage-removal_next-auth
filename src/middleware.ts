@@ -12,10 +12,12 @@ export default async function middleware(req: NextRequest) {
   const isPublicRoute = publicRoutes.includes(path)
 
   const refresh_token = (await cookies()).get('refresh_token')?.value
+  const access_token = (await cookies()).get('access_token')?.value
 
   // console.log(56, 'cookie', refresh_token)
 
-  const session = await verifyToken(refresh_token)
+  const session = await verifyToken(access_token)
+  // const session = await verifyToken(refresh_token)
   console.log(567, 'session', session)
 
   if (isProtectedRoute && !session?.userId) {
