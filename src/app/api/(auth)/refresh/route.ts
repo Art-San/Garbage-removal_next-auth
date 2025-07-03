@@ -1,10 +1,7 @@
 import { getUser } from '@/prisma-db'
 import { createAccessToken, verifyToken } from '@/server/lib/auth'
-import { cookies } from 'next/headers'
 
 export async function POST(request: Request) {
-  const refresh_token = await cookies()
-
   const refreshToken = request.headers.get('refresh_token')
   // const refreshToken = request.headers
   //   .get('Cookie')
