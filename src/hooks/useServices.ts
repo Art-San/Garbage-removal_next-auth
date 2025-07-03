@@ -18,7 +18,7 @@ export function useServices() {
     queryKey: ['services'],
     queryFn: () => appFetch('api/services'),
     // queryFn: () => fetch('api/dashboard'),
-    select: (data) => data.data
+    select: (data) => data
   })
 
   const [services, setServices] = useState<User[]>(data)

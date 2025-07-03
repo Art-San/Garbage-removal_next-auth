@@ -1,7 +1,6 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { decrypt } from '@/lib/session'
 import { cookies } from 'next/headers'
-import { useSession } from './model/session'
+import { verifyToken } from './server/lib/auth'
 
 const protectedRoutes = ['/dashboard', '/profile', '/settings']
 const publicRoutes = ['/login', '/register']
@@ -12,14 +11,27 @@ export default async function middleware(req: NextRequest) {
   const isProtectedRoute = protectedRoutes.includes(path)
   const isPublicRoute = publicRoutes.includes(path)
 
-  // const token = await useSession.getState().refreshAccessToken()
-  // console.log(456, token)
+  const refresh_token = (await cookies()).get('refresh_token')?.value
+  const access_token = (await cookies()).get('access_token')?.value
+  // console.log(56, 'cookie', refresh_token)
 
-  // const cookie = (await cookies()).get('session')?.value
-  // console.log(56, 'cookie', cookie)
+  const session = await verifyToken(access_token)
+  console.log(567, 'session', session)
 
-  // const session = await decrypt(cookie)
-  // console.log(567, 'session', session)
+  if (!session && refresh_token) {
+    // console.log(45, `${req.nextUrl.origin}/api/refresh`)
+    const res = await fetch(`${req.nextUrl.origin}/api/refresh`, {
+      method: 'POST',
+      headers: {
+        refresh_token: refresh_token
+      }
+    })
+
+    console.log(13, 'Нет access_token но есть refresh_token')
+
+    const data = await res.json()
+    console.log(14, data)
+  }
   // if (isProtectedRoute && !session?.userId) {
   //   return NextResponse.redirect(new URL('/login', req.nextUrl))
   // }

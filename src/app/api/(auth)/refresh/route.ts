@@ -3,14 +3,16 @@ import { createAccessToken, verifyToken } from '@/server/lib/auth'
 import { cookies } from 'next/headers'
 
 export async function POST(request: Request) {
-  const cookie = (await cookies()).get('refresh_token')?.value
-  console.log(789, 'api/refresh', cookie)
-  const refreshToken = request.headers
-    .get('Cookie')
-    ?.split('; ')
-    .find((c) => c.startsWith('refresh_token='))
-    ?.split('=')[1]
+  const refresh_token = await cookies()
 
+  const refreshToken = request.headers.get('refresh_token')
+  // const refreshToken = request.headers
+  //   .get('Cookie')
+  //   ?.split('; ')
+  //   .find((c) => c.startsWith('refresh_token='))
+  //   ?.split('=')[1]
+
+  console.log(789, 'api/refresh', request.headers.get('refresh_token'))
   if (!refreshToken) {
     return Response.json({ error: 'No refresh token' }, { status: 401 })
   }

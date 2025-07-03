@@ -1,4 +1,4 @@
-import { updateUserRefreshToken } from '@/prisma-db'
+// import { updateUserRefreshToken } from '@/prisma-db'
 import { SignJWT, jwtVerify, type JWTPayload } from 'jose'
 import { cookies } from 'next/headers'
 
@@ -9,11 +9,21 @@ const JWT_SECRET = new TextEncoder().encode(secretKey)
 
 // Генерация accessToken (15 мин)
 export async function createAccessToken(userId: string, email: string) {
-  return await new SignJWT({ userId, email })
+  const accessToken = await new SignJWT({ userId, email })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('15m')
+    .setExpirationTime('10s')
     .sign(JWT_SECRET)
+
+  const cookieStore = await cookies()
+  cookieStore.set('access_token', accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 10,
+    path: '/'
+  })
+
+  return accessToken
 }
 
 // Генерация refreshToken (7 дней) + сохранение в куки
@@ -25,7 +35,7 @@ export async function createRefreshToken(userId: string, email: string) {
     .sign(JWT_SECRET)
 
   // Сохраняем refreshToken в БД
-  await updateUserRefreshToken(+userId, refreshToken)
+  // await updateUserRefreshToken(+userId, refreshToken)
   // await prisma.user.update({
   //   where: { id: userId },
   //   data: { refreshToken }
@@ -44,11 +54,21 @@ export async function createRefreshToken(userId: string, email: string) {
 }
 
 // Валидация токена
-export async function verifyToken(token: string) {
+export async function verifyToken(token: string = '') {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET)
     return payload as JWTPayload & { userId: string }
   } catch {
     return null
   }
+}
+
+export async function deleteAccessToken() {
+  const cookieStore = await cookies()
+  cookieStore.delete('access_token')
+}
+
+export async function deleteRefreshToken() {
+  const cookieStore = await cookies()
+  cookieStore.delete('refresh_token')
 }
