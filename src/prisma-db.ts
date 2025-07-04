@@ -22,7 +22,7 @@ export async function getUsers() {
   return prisma.user.findMany()
 }
 
-export async function getUser(id: number) {
+export async function getUserById(id: number) {
   try {
     const user = await prisma.user.findUnique({
       where: { id }

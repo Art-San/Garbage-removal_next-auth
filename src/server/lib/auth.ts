@@ -68,7 +68,8 @@ export async function deleteAccessToken() {
   cookieStore.delete('access_token')
 }
 
-export async function deleteRefreshToken() {
+export async function deleteRefreshAccessToken() {
   const cookieStore = await cookies()
   cookieStore.delete('refresh_token')
+  cookieStore.delete('access_token')
 }
