@@ -1,25 +1,23 @@
 import { useMutation } from '@tanstack/react-query'
 import { useSession } from '@/model/session'
 import { useRouter } from 'next/navigation'
-import { appFetch } from '@/utils/api'
+// import { appFetch } from '@/utils/api'
 import { FormLoginData } from '../login-form'
+import { login } from '@/paromov/api/auth'
 
 export function useLogin() {
   const session = useSession()
   const router = useRouter()
   // const queryClient = useQueryClient()
 
-  const {
-    mutate: login,
-    isPending,
-    isError,
-    error
-  } = useMutation({
+  const { mutate, isPending, isError, error } = useMutation({
     mutationKey: ['login-user'],
-    mutationFn: (data: FormLoginData) => appFetch('api/login', { json: data }),
+    mutationFn: (data: FormLoginData) => login(data.email, data.password),
+    // mutationFn: (data: FormLoginData) => appFetch('api/login', { json: data }),
     // mutationFn: (data: IAuthForm) => AuthService.login(data), // Взял из TG ьот грузчики, там дальше аксиом стои
     onSuccess(data) {
-      session.login(data.accessToken)
+      console.log(78, data)
+      session.login(data.token)
       // toast.success('Успешный вход')
       router.push('/dashboard')
       // queryClient.invalidateQueries({
@@ -34,5 +32,5 @@ export function useLogin() {
 
   const errorMessage = isError ? error.message : undefined
 
-  return { login, isPending, errorMessage }
+  return { mutate, isPending, errorMessage }
 }

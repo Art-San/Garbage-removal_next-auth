@@ -15,13 +15,13 @@ export async function createAccessToken(userId: string, email: string) {
     .setExpirationTime('15m')
     .sign(JWT_SECRET)
 
-  const cookieStore = await cookies()
-  cookieStore.set('access_token', accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 15 * 60,
-    path: '/'
-  })
+  // const cookieStore = await cookies()
+  // cookieStore.set('access_token', accessToken, {
+  //   httpOnly: true,
+  //   secure: process.env.NODE_ENV === 'production',
+  //   maxAge: 15 * 60,
+  //   path: '/'
+  // })
 
   return accessToken
 }

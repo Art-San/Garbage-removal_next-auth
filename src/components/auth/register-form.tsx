@@ -46,7 +46,7 @@ export function RegisterForm() {
     }
   })
 
-  const { register, isPending, errorMessage } = useRegister()
+  const { mutate: register, isPending, errorMessage } = useRegister()
 
   async function onSubmit(data: FormRegisterData) {
     register(data)

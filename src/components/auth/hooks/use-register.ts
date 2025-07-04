@@ -1,25 +1,21 @@
 import { useMutation } from '@tanstack/react-query'
 import { useSession } from '@/model/session'
 // import { useRouter } from 'next/navigation'
-import { appFetch } from '@/utils/api'
+import { register } from '@/paromov/api/auth'
 import { FormLoginData } from '../login-form'
 
 export function useRegister() {
   const session = useSession()
   // const router = useRouter()
 
-  const {
-    mutate: register,
-    isPending,
-    isError,
-    error
-  } = useMutation({
+  const { mutate, isPending, isError, error } = useMutation({
     mutationKey: ['register-user'],
-    mutationFn: (data: FormLoginData) =>
-      appFetch('api/register', { json: data }),
+    mutationFn: (data: FormLoginData) => register(data.email, data.password),
+    // appFetch('api/register', { json: data }),
 
     onSuccess(data) {
-      session.login(data.accessToken)
+      console.log(78, data)
+      session.login(data.token)
       // router.push('/dashboard')
     },
     onError: (error) => {
@@ -29,8 +25,9 @@ export function useRegister() {
 
   const errorMessage = isError ? error.message : undefined
 
-  return { register, isPending, errorMessage }
+  return { mutate, isPending, errorMessage }
 }
+
 // export function useRegister() {
 //   const navigate = useNavigate()
 

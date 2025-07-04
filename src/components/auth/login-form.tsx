@@ -44,7 +44,7 @@ export function LoginForm() {
     }
   })
 
-  const { errorMessage, isPending, login } = useLogin()
+  const { mutate: login, errorMessage, isPending } = useLogin()
 
   async function onSubmit(data: FormLoginData) {
     login(data)

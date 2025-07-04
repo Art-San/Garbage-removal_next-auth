@@ -11,7 +11,7 @@ export async function POST(request: Request) {
     const accessToken = await createAccessToken(String(user.id), user.email)
     await createRefreshToken(String(user.id), user.email)
 
-    return Response.json({ accessToken, user })
+    return Response.json({ token: accessToken, username: user.email })
   } catch (error) {
     return Response.json(
       { error: error instanceof Error ? error.message : 'Login failed' },

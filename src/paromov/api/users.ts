@@ -12,13 +12,13 @@ export interface User {
 
 export const getTasks = async (): Promise<User[]> => {
   return authorizedApiClient<User[]>({
-    url: '/tasks'
+    url: '/users'
   })
 }
 
 export const createTask = async (title: string): Promise<User> => {
   return authorizedApiClient<User>({
-    url: '/tasks',
+    url: '/users',
     method: 'POST',
     json: { title }
   })
@@ -26,18 +26,18 @@ export const createTask = async (title: string): Promise<User> => {
 
 export const deleteTask = async (id: number): Promise<void> => {
   return authorizedApiClient({
-    url: `/tasks/${id}`,
+    url: `/users/${id}`,
     method: 'DELETE'
   })
 }
 
-export const toggleTask = async (
+export const changeRoleUser = async (
   id: number,
-  completed: boolean
+  newRole: string
 ): Promise<User> => {
   return authorizedApiClient<User>({
-    url: `/tasks/${id}`,
+    url: `/users/${id}`,
     method: 'PATCH',
-    json: { completed }
+    json: { role: newRole }
   })
 }

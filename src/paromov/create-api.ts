@@ -23,7 +23,7 @@ export function createApi({ baseUrl }: CreateApiParams) {
       config.body = JSON.stringify(config.json)
     }
 
-    const response = await fetch(`${baseUrl}/${config.url}`, config)
+    const response = await fetch(`${baseUrl}${config.url}`, config)
 
     if (!response.ok) {
       throw new ApiError(config, response)

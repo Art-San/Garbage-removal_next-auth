@@ -1,16 +1,16 @@
 import { publicApiClient } from './client'
 
 export interface User {
-  username: string
+  email: string
   token: string
 }
 
-export const register = async (username: string, password: string) => {
+export const register = async (email: string, password: string) => {
   const response = await publicApiClient<{ token: string }>({
     url: '/register',
     method: 'POST',
     json: {
-      username,
+      email,
       password
     }
   })
@@ -18,12 +18,12 @@ export const register = async (username: string, password: string) => {
   return response
 }
 
-export const login = async (username: string, password: string) => {
+export const login = async (email: string, password: string) => {
   const response = await publicApiClient<{ token: string }>({
     url: '/login',
     method: 'POST',
     json: {
-      username,
+      email,
       password
     }
   })
