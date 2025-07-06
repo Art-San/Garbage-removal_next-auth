@@ -16,7 +16,7 @@ type User = {
 export function useServices() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['services'],
-    queryFn: () => appFetch('api/services'),
+    queryFn: () => appFetch('api/users'),
     // queryFn: () => fetch('api/dashboard'),
     select: (data) => data
   })

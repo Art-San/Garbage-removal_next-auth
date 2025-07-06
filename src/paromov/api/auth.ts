@@ -15,6 +15,10 @@ export const register = async (email: string, password: string) => {
     }
   })
 
+  // if (response.token) {
+  //   appSessionStore.setSessionToken(response.token)
+  // }
+
   return response
 }
 
@@ -27,6 +31,10 @@ export const login = async (email: string, password: string) => {
       password
     }
   })
+
+  // if (response.token) {
+  //   appSessionStore.setSessionToken(response.token)
+  // }
 
   return response
 }

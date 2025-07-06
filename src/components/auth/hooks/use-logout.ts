@@ -1,20 +1,17 @@
+import { logout } from '@/paromov/api/auth'
+import { appSessionStore } from '@/paromov/session'
 import { useMutation } from '@tanstack/react-query'
-
 import { useRouter } from 'next/navigation'
-import { appFetch } from '@/utils/api'
 
 export function useLogout() {
   const router = useRouter()
 
-  const {
-    mutate: logout,
-    isPending,
-    isError,
-    error
-  } = useMutation({
+  const { mutate, isPending, isError, error } = useMutation({
     mutationKey: ['logout'],
-    mutationFn: () => appFetch('api/logout', { json: { logout: 'yes' } }),
+    mutationFn: () => logout(),
+    // mutationFn: () => appFetch('api/logout', { json: { logout: 'yes' } }),
     onSuccess() {
+      appSessionStore.removeSession()
       router.push('/')
     },
     onError: (error) => {
@@ -25,5 +22,5 @@ export function useLogout() {
 
   const errorMessage = isError ? error.message : undefined
 
-  return { logout, isPending, errorMessage }
+  return { mutate, isPending, errorMessage }
 }

@@ -10,13 +10,13 @@ export interface User {
   createdAt: string
 }
 
-export const getTasks = async (): Promise<User[]> => {
+export const getUsers = async (): Promise<User[]> => {
   return authorizedApiClient<User[]>({
     url: '/users'
   })
 }
 
-export const createTask = async (title: string): Promise<User> => {
+export const createUser = async (title: string): Promise<User> => {
   return authorizedApiClient<User>({
     url: '/users',
     method: 'POST',
@@ -24,7 +24,7 @@ export const createTask = async (title: string): Promise<User> => {
   })
 }
 
-export const deleteTask = async (id: number): Promise<void> => {
+export const deleteUser = async (id: number): Promise<void> => {
   return authorizedApiClient({
     url: `/users/${id}`,
     method: 'DELETE'

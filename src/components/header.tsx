@@ -3,7 +3,7 @@
 import { useLogout } from './auth/hooks/use-logout'
 
 export default function Header() {
-  const { logout, isPending } = useLogout()
+  const { mutate: logout, isPending } = useLogout()
 
   // const router = useRouter()
 
@@ -25,7 +25,7 @@ export default function Header() {
   // }
 
   async function onSubmit() {
-    localStorage.removeItem('token')
+    // localStorage.removeItem('token')
     logout()
   }
   return (

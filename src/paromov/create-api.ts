@@ -1,7 +1,3 @@
-type CreateApiParams = {
-  baseUrl: string
-}
-
 type RequestConfig = RequestInit & {
   url: string
   json?: unknown
@@ -13,7 +9,25 @@ class ApiError extends Error {
   }
 }
 
-export function createApi({ baseUrl }: CreateApiParams) {
+type RequestMiddleware = (
+  config: RequestConfig
+) => Promise<RequestConfig> | RequestConfig
+type ResponseMiddleware = (
+  response: Response,
+  requestConfig: RequestConfig
+) => Promise<Response> | Response
+
+type CreateApiParams = {
+  baseUrl: string
+  requestMiddlewares?: RequestMiddleware[]
+  responseMiddlewares?: ResponseMiddleware[]
+}
+
+export function createApi({
+  baseUrl,
+  requestMiddlewares = [],
+  responseMiddlewares = []
+}: CreateApiParams) {
   return async function apiInstance<T>(config: RequestConfig) {
     if (config.json) {
       config.headers = {
@@ -23,7 +37,18 @@ export function createApi({ baseUrl }: CreateApiParams) {
       config.body = JSON.stringify(config.json)
     }
 
-    const response = await fetch(`${baseUrl}${config.url}`, config)
+    config = await requestMiddlewares.reduce(
+      async (configPromise, middleware) => middleware(await configPromise),
+      Promise.resolve(config)
+    )
+
+    let response = await fetch(`${baseUrl}${config.url}`, config)
+
+    response = await responseMiddlewares.reduce(
+      async (responsePromise, middleware) =>
+        middleware(await responsePromise, config),
+      Promise.resolve(response)
+    )
 
     if (!response.ok) {
       throw new ApiError(config, response)

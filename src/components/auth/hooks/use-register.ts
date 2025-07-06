@@ -1,11 +1,12 @@
 import { useMutation } from '@tanstack/react-query'
-import { useSession } from '@/model/session'
+// import { useSession } from '@/model/session'
 // import { useRouter } from 'next/navigation'
 import { register } from '@/paromov/api/auth'
 import { FormLoginData } from '../login-form'
+import { appSessionStore } from '@/paromov/session'
 
 export function useRegister() {
-  const session = useSession()
+  // const session = useSession()
   // const router = useRouter()
 
   const { mutate, isPending, isError, error } = useMutation({
@@ -15,7 +16,8 @@ export function useRegister() {
 
     onSuccess(data) {
       console.log(78, data)
-      session.login(data.token)
+      appSessionStore.setSessionToken(data.token)
+      // session.login(data.token)
       // router.push('/dashboard')
     },
     onError: (error) => {
