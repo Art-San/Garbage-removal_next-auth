@@ -1,3 +1,4 @@
+import { getUsers } from '@/paromov/api/users'
 import { appFetch } from '@/utils/api'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
@@ -16,9 +17,10 @@ type User = {
 export function useServices() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['services'],
-    queryFn: () => appFetch('api/users'),
+    queryFn: () => getUsers()
+    // queryFn: () => appFetch('api/users'),
     // queryFn: () => fetch('api/dashboard'),
-    select: (data) => data
+    // select: (data) => data
   })
 
   const [services, setServices] = useState<User[]>(data)
