@@ -1,3 +1,4 @@
+import { refreshToken } from '@/paromov/api/auth'
 import { getUsers } from '@/paromov/api/users'
 import { appFetch } from '@/utils/api'
 import { useQuery } from '@tanstack/react-query'
@@ -17,19 +18,19 @@ type User = {
 export function useServices() {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['services'],
-    queryFn: () => getUsers()
+    queryFn: () => refreshToken(),
     // queryFn: () => appFetch('api/users'),
     // queryFn: () => fetch('api/dashboard'),
-    // select: (data) => data
+    select: (data) => data
   })
 
-  const [services, setServices] = useState<User[]>(data)
+  // const [services, setServices] = useState<User[]>(data)
 
-  useEffect(() => {
-    setServices(data)
-  }, [data])
+  // useEffect(() => {
+  //   setServices(data)
+  // }, [data])
 
   const errorMessage = isError ? error.message : undefined
 
-  return { data: services, isLoading, errorMessage }
+  return { data, isLoading, errorMessage }
 }

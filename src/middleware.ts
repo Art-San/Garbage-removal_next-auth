@@ -1,32 +1,95 @@
+import { type NextRequest, NextResponse } from 'next/server'
+import { cookies } from 'next/headers'
+import { verifyToken } from './server/lib/auth'
+import { parseJwtServer } from './server/lib/jwtServer'
+
+// const protectedRoutes = ['/dashboard']
+// const publicRoutes = ['/login', '/register']
+
+export default async function middleware(req: NextRequest) {
+  console.log(345, 'test')
+
+  // const isProtectedRoute = protectedRoutes.includes(path)
+  // const isPublicRoute = publicRoutes.includes(path)
+
+  const authHeader = req.headers.get('authorization')
+  const token = authHeader?.split(' ')[1]
+  // console.log(567, authHeader)
+  console.log(568, token)
+
+  if (!token) {
+    return new NextResponse(
+      JSON.stringify({ error: 'Authentication required' }),
+      { status: 401, headers: { 'content-type': 'application/json' } }
+    )
+  }
+
+  // console.log(1717, parseJwtServer(token))
+  try {
+    const session = await verifyToken(token)
+
+    if (!session) {
+      return new NextResponse(JSON.stringify({ error: 'Invalid token' }), {
+        status: 403,
+        headers: { 'content-type': 'application/json' }
+      })
+    }
+
+    const requestHeaders = new Headers(req.headers)
+
+    requestHeaders.set('x-user-id', session.userId)
+    requestHeaders.set('x-email', session.email)
+
+    const response = NextResponse.next({
+      request: {
+        headers: requestHeaders
+      }
+    })
+
+    return response
+  } catch (error) {
+    return new NextResponse(
+      JSON.stringify({ error: 'Token verification failed' }),
+      { status: 403, headers: { 'content-type': 'application/json' } }
+    )
+  }
+}
+
+export const config = {
+  matcher: ['/(api/private|trpc)(.*)']
+}
 // import { type NextRequest, NextResponse } from 'next/server'
 // import { cookies } from 'next/headers'
 // import { verifyToken } from './server/lib/auth'
 
-// const protectedRoutes = [
-//   '/dashboard',
-//   '/dashboard/cards',
-//   '/profile',
-//   '/settings'
-// ]
+// const protectedRoutes = ['/dashboard', '/profile', '/settings']
 // const publicRoutes = ['/login', '/register']
 
 // export default async function middleware(req: NextRequest) {
 //   const path = req.nextUrl.pathname
 
-//   const authHeader = req.headers
-//   console.log(568, authHeader)
+//   // const authHeader = req.headers
+//   // console.log(568, authHeader)
 
 //   const isProtectedRoute = protectedRoutes.includes(path)
 //   const isPublicRoute = publicRoutes.includes(path)
 
-//   const refresh_token = (await cookies()).get('refresh_token')?.value
-//   // const access_token = (await cookies()).get('access_token')?.value
+//   const authorizationHeader = req.headers.get('authorization')?.split(' ')[1]
+//   console.log(569, 'Authorization:', authorizationHeader)
+
+//   // const refresh_token = (await cookies()).get('refresh_token')?.value
+//   const access_token = (await cookies()).get('access_token')?.value
 
 //   // console.log(56, 'cookie', refresh_token)
 
+//   // const session = await verifyToken(authorizationHeader)
 //   // const session = await verifyToken(access_token)
-//   const session = await verifyToken(refresh_token)
-//   console.log(567, 'session', session)
+//   // console.log(567, 'session', session)
+
+//   if (authorizationHeader) {
+//     // console.log(54, 'authorizationHeader')
+//     console.log(55, authorizationHeader === access_token)
+//   }
 
 //   // if (isProtectedRoute && !session?.userId) {
 //   //   return NextResponse.redirect(new URL('/login', req.nextUrl))
@@ -44,18 +107,5 @@
 // }
 
 // export const config = {
-//   matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)']
+//   matcher: ['/(api|trpc|dashboard)(.*)']
 // }
-
-import { type NextRequest, NextResponse } from 'next/server'
-
-export default async function middleware(req: NextRequest) {
-  // Чтение заголовков
-  const authorizationHeader = req.headers.get('authorization')
-  const userAgent = req.headers.get('user-agent')
-
-  console.log('Authorization:', authorizationHeader)
-  console.log('User-Agent:', userAgent)
-
-  return NextResponse.next()
-}

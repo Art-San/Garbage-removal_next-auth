@@ -17,7 +17,7 @@ export function useLogin() {
     // mutationFn: (data: FormLoginData) => appFetch('api/login', { json: data }),
     // mutationFn: (data: IAuthForm) => AuthService.login(data), // Взял из TG ьот грузчики, там дальше аксиом стои
     onSuccess(data) {
-      console.log(78, data)
+      console.log(78, data.token)
       // session.login(data.token)
       appSessionStore.setSessionToken(data.token)
       // toast.success('Успешный вход')

@@ -47,3 +47,11 @@ export const logout = async () => {
 
   return response
 }
+export const refreshToken = async () => {
+  const response = await publicApiClient({
+    url: '/refresh',
+    method: 'POST'
+  })
+
+  return response
+}

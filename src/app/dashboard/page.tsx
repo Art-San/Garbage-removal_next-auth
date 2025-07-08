@@ -1,14 +1,14 @@
 'use client'
-import { useServices } from '@/hooks/useServices'
+// import { useServices } from '@/hooks/useServices'
 
 export default function Dashboard() {
-  const { data, errorMessage } = useServices()
+  // const { data, errorMessage } = useServices()
 
   return (
     <div>
       <h1>Dashboard</h1>
 
-      {data && (
+      {/* {data && (
         <ul className="space-y-4 p-4">
           {data.map((user) => (
             <li
@@ -24,7 +24,7 @@ export default function Dashboard() {
           ))}
         </ul>
       )}
-      {errorMessage && <p className=" text-red-500">{errorMessage}</p>}
+      {errorMessage && <p className=" text-red-500">{errorMessage}</p>} */}
     </div>
   )
 }

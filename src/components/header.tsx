@@ -1,28 +1,11 @@
 'use client'
+import { appSessionStore } from '@/paromov/session'
 // import { useRouter } from 'next/navigation'
 import { useLogout } from './auth/hooks/use-logout'
 
 export default function Header() {
+  const session = appSessionStore.useSession()
   const { mutate: logout, isPending } = useLogout()
-
-  // const router = useRouter()
-
-  // const handleLogout = async () => {
-  //   try {
-  //     const response = await fetch('/api/logout', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json'
-  //       }
-  //     })
-
-  //     if (response.ok) {
-  //       router.push('/login')
-  //     }
-  //   } catch (error) {
-  //     console.error('Logout failed:', error)
-  //   }
-  // }
 
   async function onSubmit() {
     // localStorage.removeItem('token')
@@ -32,6 +15,13 @@ export default function Header() {
     <header className="p-4 bg-gray-800 text-white">
       <div className="container mx-auto flex justify-between items-center">
         <h1>Дашборд</h1>
+        {session ? (
+          <>
+            <span>Welcome {session?.email}</span>
+          </>
+        ) : (
+          <p>Нет ни кого</p>
+        )}
 
         <button
           onClick={onSubmit}

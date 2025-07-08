@@ -1,32 +1,36 @@
-import { getUser } from '@/prisma-db'
-import { createAccessToken, verifyToken } from '@/server/lib/auth'
+import {
+  createAccessToken,
+  createRefreshToken,
+  verifyToken
+} from '@/server/lib/auth'
+import { cookies } from 'next/headers'
 
-export async function POST(request: Request) {
-  const refreshToken = request.headers.get('refresh_token')
-  // const refreshToken = request.headers
-  //   .get('Cookie')
-  //   ?.split('; ')
-  //   .find((c) => c.startsWith('refresh_token='))
-  //   ?.split('=')[1]
+export async function POST() {
+  const refreshToken = (await cookies()).get('refresh_token')?.value
 
-  console.log(789, 'api/refresh', request.headers.get('refresh_token'))
-  if (!refreshToken) {
-    return Response.json({ error: 'No refresh token' }, { status: 401 })
+  try {
+    if (!refreshToken) {
+      return Response.json({ error: 'No refresh token' }, { status: 401 })
+    }
+
+    const decoded = await verifyToken(refreshToken)
+
+    if (!decoded || new Date(decoded.exp * 1000) < new Date()) {
+      return Response.json({ error: 'Invalid refresh token' }, { status: 403 })
+    }
+
+    const accessToken = await createAccessToken(decoded.userId, decoded.email)
+    await createRefreshToken(decoded.userId, decoded.email)
+
+    return Response.json({ token: accessToken, username: decoded.email })
+  } catch (error) {
+    return Response.json(
+      { error: error instanceof Error ? error.message : 'Login failed' },
+      { status: 400 }
+    )
   }
-
-  const decoded = await verifyToken(refreshToken)
-
-  if (!decoded || !decoded.userId) {
-    return Response.json({ error: 'Invalid refresh token' }, { status: 401 })
-  }
-
-  const user = await getUser(+decoded.userId)
-
-  // Генерируем новый access token
-  const newAccessToken = await createAccessToken(String(user.id), user.email)
-
-  return Response.json({ accessToken: newAccessToken, user })
 }
+
 // import { decrypt, generateTokens } from '@/lib/session'
 // import { getUser } from '@/prisma-db'
 // import { cookies } from 'next/headers'

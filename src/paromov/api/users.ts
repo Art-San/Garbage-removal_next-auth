@@ -12,13 +12,13 @@ export interface User {
 
 export const getUsers = async (): Promise<User[]> => {
   return authorizedApiClient<User[]>({
-    url: '/users'
+    url: '/private/users'
   })
 }
 
 export const createUser = async (title: string): Promise<User> => {
   return authorizedApiClient<User>({
-    url: '/users',
+    url: '/private/users',
     method: 'POST',
     json: { title }
   })
@@ -26,7 +26,7 @@ export const createUser = async (title: string): Promise<User> => {
 
 export const deleteUser = async (id: number): Promise<void> => {
   return authorizedApiClient({
-    url: `/users/${id}`,
+    url: `/private/users/${id}`,
     method: 'DELETE'
   })
 }
@@ -36,7 +36,7 @@ export const changeRoleUser = async (
   newRole: string
 ): Promise<User> => {
   return authorizedApiClient<User>({
-    url: `/users/${id}`,
+    url: `/private/users/${id}`,
     method: 'PATCH',
     json: { role: newRole }
   })

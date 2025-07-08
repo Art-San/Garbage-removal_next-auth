@@ -1,4 +1,6 @@
 'use client'
+import { useSyncExternalStore } from 'react'
+import { Atom } from './lib/atom'
 import { parseJwt } from './lib/jwt'
 
 type Session = {
@@ -9,25 +11,10 @@ type Session = {
 const TOKEN_KEY = 'token'
 
 class SessionStore {
-  token: string | null
+  public tokenAtom = new Atom<string | null>(null)
 
   constructor() {
-    this.token = this.getSessionToken()
-  }
-  setSessionToken(token: string) {
-    localStorage.setItem(TOKEN_KEY, token)
-    this.token = token
-  }
-
-  getSession() {
-    const token = this.getSessionToken()
-    if (!token) return null
-    return parseJwt<Session>(token)
-  }
-
-  removeSession() {
-    this.token = null
-    localStorage.removeItem(TOKEN_KEY)
+    this.tokenAtom.set(this.getSessionToken())
   }
 
   getSessionToken() {
@@ -36,9 +23,45 @@ class SessionStore {
     }
     return ''
   }
+
+  setSessionToken(token: string) {
+    localStorage.setItem(TOKEN_KEY, token)
+    this.tokenAtom.set(token)
+  }
+
+  removeSession() {
+    this.tokenAtom.set(null)
+    localStorage.removeItem(TOKEN_KEY)
+  }
+
+  getSession() {
+    return tokenToSession(this.tokenAtom.get())
+  }
+
+  isSessionExpired() {
+    const session = this.getSession()
+    return !session || Date.now() > session.exp * 1000
+  }
+
+  useSession = () => {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const token = useSyncExternalStore(
+      this.tokenAtom.listen,
+      this.tokenAtom.get,
+      () => null
+    )
+
+    return tokenToSession(token)
+  }
+}
+
+const tokenToSession = (token: string | null) => {
+  if (!token) return null
+  return parseJwt<Session>(token)
 }
 
 export const appSessionStore = new SessionStore()
+
 // import { useSyncExternalStore } from "react";
 // import { parseJwt } from "./lib/jwt";
 // import { BroadcastEvents } from "./lib/boardcast-events";

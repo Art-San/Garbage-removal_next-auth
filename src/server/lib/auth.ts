@@ -12,16 +12,16 @@ export async function createAccessToken(userId: string, email: string) {
   const accessToken = await new SignJWT({ userId, email })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('15m')
+    .setExpirationTime('1d')
     .sign(JWT_SECRET)
 
-  // const cookieStore = await cookies()
-  // cookieStore.set('access_token', accessToken, {
-  //   httpOnly: true,
-  //   secure: process.env.NODE_ENV === 'production',
-  //   maxAge: 15 * 60,
-  //   path: '/'
-  // })
+  const cookieStore = await cookies()
+  cookieStore.set('access_token', accessToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: 60 * 60 * 24,
+    path: '/'
+  })
 
   return accessToken
 }
@@ -57,7 +57,12 @@ export async function createRefreshToken(userId: string, email: string) {
 export async function verifyToken(token: string = '') {
   try {
     const { payload } = await jwtVerify(token, JWT_SECRET)
-    return payload as JWTPayload & { userId: string }
+    return payload as JWTPayload & {
+      userId: string
+      email: string
+      iat: number
+      exp: number
+    }
   } catch {
     return null
   }

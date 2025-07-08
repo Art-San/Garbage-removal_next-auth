@@ -3,9 +3,9 @@
 import { useServices } from '@/hooks/useServices'
 
 export default function UsersPrismaDBPage() {
-  const { data: users, isLoading } = useServices()
+  const { data: users } = useServices()
 
-  console.log(567, isLoading)
+  // console.log(567, isLoading)
 
   return (
     <ul className="space-y-4 p-4">

@@ -128,7 +128,6 @@ export async function updateUser(
 }
 
 export async function deleteUser(id: number) {
-  await new Promise((resolve) => setTimeout(resolve, 1500))
   return prisma.user.delete({
     where: { id }
   })
