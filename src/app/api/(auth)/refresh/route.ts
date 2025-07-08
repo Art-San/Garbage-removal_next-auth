@@ -15,6 +15,8 @@ export async function POST() {
 
     const decoded = await verifyToken(refreshToken)
 
+    console.log(888, decoded)
+
     if (!decoded || new Date(decoded.exp * 1000) < new Date()) {
       return Response.json({ error: 'Invalid refresh token' }, { status: 403 })
     }

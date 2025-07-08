@@ -1,38 +1,45 @@
 import { type NextRequest, NextResponse } from 'next/server'
-import { cookies } from 'next/headers'
+// import { cookies } from 'next/headers'
 import { verifyToken } from './server/lib/auth'
-import { parseJwtServer } from './server/lib/jwtServer'
+import { cookies } from 'next/headers'
+// import { parseJwtServer } from './server/lib/jwtServer'
 
-// const protectedRoutes = ['/dashboard']
-// const publicRoutes = ['/login', '/register']
+const protectedRoutes = ['/dashboard']
+const publicRoutes = ['/login', '/register']
 
 export default async function middleware(req: NextRequest) {
+  const path = req.nextUrl.pathname
+  console.log(244, path)
   console.log(345, 'test')
 
-  // const isProtectedRoute = protectedRoutes.includes(path)
-  // const isPublicRoute = publicRoutes.includes(path)
+  const isProtectedRoute = protectedRoutes.includes(path)
+  const isPublicRoute = publicRoutes.includes(path)
 
-  const authHeader = req.headers.get('authorization')
-  const token = authHeader?.split(' ')[1]
+  // const authHeader = req.headers.get('authorization')
+  // const token = authHeader?.split(' ')[1]
+
+  const refresh_token = (await cookies()).get('refresh_token')?.value
   // console.log(567, authHeader)
-  console.log(568, token)
-
-  if (!token) {
-    return new NextResponse(
-      JSON.stringify({ error: 'Authentication required' }),
-      { status: 401, headers: { 'content-type': 'application/json' } }
-    )
+  console.log(568, refresh_token)
+  if (!refresh_token && isProtectedRoute) {
+    return NextResponse.redirect(new URL('/login', req.nextUrl))
   }
+
+  // if (!token) {
+  //   return new NextResponse(
+  //     JSON.stringify({ error: 'Authentication required' }),
+  //     { status: 401, headers: { 'content-type': 'application/json' } }
+  //   )
+  // }
+  console.log(346, 'test2')
 
   // console.log(1717, parseJwtServer(token))
   try {
-    const session = await verifyToken(token)
+    const session = await verifyToken(refresh_token)
+    console.log(568, session)
 
-    if (!session) {
-      return new NextResponse(JSON.stringify({ error: 'Invalid token' }), {
-        status: 403,
-        headers: { 'content-type': 'application/json' }
-      })
+    if (!session && isProtectedRoute) {
+      return NextResponse.redirect(new URL('/login', req.nextUrl))
     }
 
     const requestHeaders = new Headers(req.headers)
@@ -47,16 +54,18 @@ export default async function middleware(req: NextRequest) {
     })
 
     return response
+
+    // return NextResponse.next()
   } catch (error) {
     return new NextResponse(
-      JSON.stringify({ error: 'Token verification failed' }),
+      JSON.stringify({ error: 'Проверка токена не удалась' }),
       { status: 403, headers: { 'content-type': 'application/json' } }
     )
   }
 }
 
 export const config = {
-  matcher: ['/(api/private|trpc)(.*)']
+  matcher: ['/(api/private|trpc|dashboard)(.*)']
 }
 // import { type NextRequest, NextResponse } from 'next/server'
 // import { cookies } from 'next/headers'

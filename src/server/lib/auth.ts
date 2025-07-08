@@ -12,16 +12,16 @@ export async function createAccessToken(userId: string, email: string) {
   const accessToken = await new SignJWT({ userId, email })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('1d')
+    .setExpirationTime('10s')
     .sign(JWT_SECRET)
 
-  const cookieStore = await cookies()
-  cookieStore.set('access_token', accessToken, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    maxAge: 60 * 60 * 24,
-    path: '/'
-  })
+  // const cookieStore = await cookies()
+  // cookieStore.set('access_token', accessToken, {
+  //   httpOnly: true,
+  //   secure: process.env.NODE_ENV === 'production',
+  //   maxAge: 10,
+  //   path: '/'
+  // })
 
   return accessToken
 }
