@@ -6,7 +6,7 @@ import { cookies } from 'next/headers'
 const secretKey = process.env.SESSION_SECRET || 'fallback-secret-key'
 const JWT_SECRET = new TextEncoder().encode(secretKey)
 
-const ACCESS_TOKEN_EXPIRY = '10s'
+const ACCESS_TOKEN_EXPIRY = '5m'
 const REFRESH_TOKEN_EXPIRY = '7d'
 
 // Генерация accessToken (15 мин)

@@ -73,7 +73,7 @@ export function createApi({
 // ) => Promise<RequestConfig> | RequestConfig;
 // type ResponseMiddleware = (
 //   response: Response,
-//   requsetConfig: RequestConfig
+//   requestConfig: RequestConfig
 // ) => Promise<Response> | Response;
 
 // type CreateApiParams = {
