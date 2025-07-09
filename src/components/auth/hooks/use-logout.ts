@@ -1,5 +1,5 @@
-import { logout } from '@/paromov/api/auth'
-import { appSessionStore } from '@/paromov/session'
+import { logout } from '@/shared/api/auth'
+import { appSessionStore } from '@/shared/session'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 

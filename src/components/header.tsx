@@ -1,5 +1,5 @@
 'use client'
-import { appSessionStore } from '@/paromov/session'
+import { appSessionStore } from '@/shared/session'
 // import { useRouter } from 'next/navigation'
 import { useLogout } from './auth/hooks/use-logout'
 

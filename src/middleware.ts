@@ -4,7 +4,7 @@ import { verifyToken } from './server/lib/auth'
 import { cookies } from 'next/headers'
 // import { parseJwtServer } from './server/lib/jwtServer'
 
-const protectedRoutes = ['/dashboard']
+const protectedRoutes = ['/dashboard', '/dashboard/cards']
 const publicRoutes = ['/login', '/register']
 
 export default async function middleware(req: NextRequest) {
@@ -13,7 +13,7 @@ export default async function middleware(req: NextRequest) {
   console.log(345, 'test')
 
   const isProtectedRoute = protectedRoutes.includes(path)
-  const isPublicRoute = publicRoutes.includes(path)
+  // const isPublicRoute = publicRoutes.includes(path)
 
   // const authHeader = req.headers.get('authorization')
   // const token = authHeader?.split(' ')[1]
@@ -22,6 +22,7 @@ export default async function middleware(req: NextRequest) {
   // console.log(567, authHeader)
   console.log(568, refresh_token)
   if (!refresh_token && isProtectedRoute) {
+    console.log(569, !refresh_token && isProtectedRoute)
     return NextResponse.redirect(new URL('/login', req.nextUrl))
   }
 

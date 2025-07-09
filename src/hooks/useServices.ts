@@ -1,5 +1,5 @@
-import { refreshToken } from '@/paromov/api/auth'
-import { getUsers } from '@/paromov/api/users'
+import { refreshToken } from '@/shared/api/auth'
+import { getUsers } from '@/shared/api/users'
 import { appFetch } from '@/utils/api'
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'

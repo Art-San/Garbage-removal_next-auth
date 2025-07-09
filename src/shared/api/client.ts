@@ -1,4 +1,4 @@
-import { CONFIG } from '@/config/config'
+import { CONFIG } from '@/shared/model/config'
 import { createApi } from '../lib/create-api'
 import { appSessionStore } from '../session'
 

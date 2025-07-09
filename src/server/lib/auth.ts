@@ -4,15 +4,17 @@ import { cookies } from 'next/headers'
 
 // const SECRET_KEY = new TextEncoder().encode(process.env.JWT_SECRET!)
 const secretKey = process.env.SESSION_SECRET || 'fallback-secret-key'
-
 const JWT_SECRET = new TextEncoder().encode(secretKey)
+
+const ACCESS_TOKEN_EXPIRY = '10s'
+const REFRESH_TOKEN_EXPIRY = '7d'
 
 // Генерация accessToken (15 мин)
 export async function createAccessToken(userId: string, email: string) {
   const accessToken = await new SignJWT({ userId, email })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('10s')
+    .setExpirationTime(ACCESS_TOKEN_EXPIRY)
     .sign(JWT_SECRET)
 
   // const cookieStore = await cookies()
@@ -31,7 +33,7 @@ export async function createRefreshToken(userId: string, email: string) {
   const refreshToken = await new SignJWT({ userId, email })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('7d')
+    .setExpirationTime(REFRESH_TOKEN_EXPIRY)
     .sign(JWT_SECRET)
 
   // Сохраняем refreshToken в БД
@@ -56,7 +58,9 @@ export async function createRefreshToken(userId: string, email: string) {
 // Валидация токена
 export async function verifyToken(token: string = '') {
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET)
+    const { payload } = await jwtVerify(token, JWT_SECRET, {
+      algorithms: ['HS256']
+    })
     return payload as JWTPayload & {
       userId: string
       email: string

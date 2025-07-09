@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 import { FormLoginData } from '../login-form'
-import { login } from '@/paromov/api/auth'
-import { appSessionStore } from '@/paromov/session'
+import { login } from '@/shared/api/auth'
+import { appSessionStore } from '@/shared/session'
 
 export function useLogin() {
   // const session = useSession()
