@@ -1,5 +1,5 @@
 import { createAccessToken, createRefreshToken } from '@/server/lib/auth'
-import { registerUser } from '@/prisma-db'
+import { registerUser } from '@/server/prisma/prisma-db'
 
 export async function POST(request: Request) {
   const body = await request.json()

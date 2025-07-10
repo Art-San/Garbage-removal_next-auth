@@ -1,7 +1,7 @@
 'use client'
 import { appSessionStore } from '@/shared/session'
 // import { useRouter } from 'next/navigation'
-import { useLogout } from './auth/hooks/use-logout'
+import { useLogout } from '../auth/model/use-logout'
 
 export default function Header() {
   const session = appSessionStore.useSession()

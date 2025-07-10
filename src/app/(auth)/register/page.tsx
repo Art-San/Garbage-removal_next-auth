@@ -1,5 +1,5 @@
-import { AuthLayout } from '@/components/auth/auth-layout'
-import { RegisterForm } from '@/components/auth/register-form'
+import { AuthLayout } from '@/features/auth/ui/auth-layout'
+import { RegisterForm } from '@/features/auth/ui/register-form'
 import Link from 'next/link'
 
 export default function RegisterPage() {

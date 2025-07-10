@@ -1,4 +1,4 @@
-import { deleteUser, getUserById } from '@/prisma-db'
+import { deleteUser, getUserById } from '@/server/prisma/prisma-db'
 
 export async function GET(
   request: Request,

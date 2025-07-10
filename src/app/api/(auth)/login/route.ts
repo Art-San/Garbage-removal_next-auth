@@ -1,4 +1,4 @@
-import { loginUser } from '@/prisma-db'
+import { loginUser } from '@/server/prisma/prisma-db'
 import { createAccessToken, createRefreshToken } from '@/server/lib/auth'
 
 export async function POST(request: Request) {

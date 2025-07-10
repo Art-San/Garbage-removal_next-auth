@@ -1,11 +1,11 @@
 'use client'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { useForm } from 'react-hook-form'
-import { useRegister } from './hooks/use-register'
+import { z } from 'zod'
 
-import { Button } from '@/shared/ui/kit/button'
+import { useLogin } from '../model/use-login'
 import { Input } from '@/shared/ui/kit/input'
+import { Button } from '@/shared/ui/kit/button'
 import {
   Form,
   FormControl,
@@ -15,41 +15,37 @@ import {
   FormMessage
 } from '@/shared/ui/kit/form'
 
-const registerSchema = z
-  .object({
-    email: z
-      .string({
-        required_error: 'Email обязателен'
-      })
-      .email('Неверный email'),
-    password: z
-      .string({
-        required_error: 'Пароль обязателен'
-      })
-      .min(6, 'Пароль должен быть не менее 6 символов'),
-    confirmPassword: z.string().optional()
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    path: ['confirmPassword'],
-    message: 'Пароли не совпадают'
-  })
+const loginSchema = z.object({
+  email: z
+    .string({
+      required_error: 'Email обязателен'
+    })
+    .email('Неверный email'),
+  password: z
+    .string({
+      required_error: 'Пароль обязателен'
+    })
+    .min(6, 'Пароль должен быть не менее 6 символов')
+})
 
-export type FormRegisterData = z.infer<typeof registerSchema>
+export type FormLoginData = z.infer<typeof loginSchema>
 
-export function RegisterForm() {
-  const form = useForm({
-    resolver: zodResolver(registerSchema),
+export function LoginForm() {
+  // const router = useRouter()
+  // const [loading, setLoading] = useState(false)
+  // const [errorMessage, setErrorMessage] = useState('')
+  const form = useForm<FormLoginData>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: '',
-      password: '',
-      confirmPassword: ''
+      password: ''
     }
   })
 
-  const { mutate: register, isPending, errorMessage } = useRegister()
+  const { mutate: login, errorMessage, isPending } = useLogin()
 
-  async function onSubmit(data: FormRegisterData) {
-    register(data)
+  async function onSubmit(data: FormLoginData) {
+    login(data)
   }
 
   return (
@@ -86,28 +82,13 @@ export function RegisterForm() {
             </FormItem>
           )}
         />
-        <FormField
-          control={form.control}
-          name="confirmPassword"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Подтвердите пароль</FormLabel>
-              <FormControl>
-                <Input type="password" {...field} />
-              </FormControl>
-
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
         {errorMessage && (
           <p className="text-destructive text-sm">{errorMessage}</p>
         )}
 
         <Button disabled={isPending} type="submit">
           {/* <Button disabled={loading} type="submit"> */}
-          Зарегистрироваться
+          Войти
         </Button>
       </form>
     </Form>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useServices } from '@/hooks/useServices'
+import { useServices } from '@/features/services/model/use-get-services'
 
 export default function UsersPrismaDBPage() {
   const { data: users } = useServices()

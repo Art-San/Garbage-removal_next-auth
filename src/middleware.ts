@@ -1,52 +1,46 @@
 import { type NextRequest, NextResponse } from 'next/server'
-// import { cookies } from 'next/headers'
 import { verifyToken } from './server/lib/auth'
 import { cookies } from 'next/headers'
-// import { parseJwtServer } from './server/lib/jwtServer'
 
 const protectedRoutes = ['/dashboard', '/dashboard/cards']
 const publicRoutes = ['/login', '/register']
 
 export default async function middleware(req: NextRequest) {
   const path = req.nextUrl.pathname
-  console.log(244, path)
-  console.log(345, 'test')
+  // console.log(345, 'test')
 
   const isProtectedRoute = protectedRoutes.includes(path)
-  // const isPublicRoute = publicRoutes.includes(path)
-
-  // const authHeader = req.headers.get('authorization')
-  // const token = authHeader?.split(' ')[1]
+  const isPublicRoute = publicRoutes.includes(path)
 
   const refresh_token = (await cookies()).get('refresh_token')?.value
-  // console.log(567, authHeader)
-  console.log(568, refresh_token)
+
+  console.log(567, refresh_token)
   if (!refresh_token && isProtectedRoute) {
-    console.log(569, !refresh_token && isProtectedRoute)
     return NextResponse.redirect(new URL('/login', req.nextUrl))
   }
 
-  // if (!token) {
-  //   return new NextResponse(
-  //     JSON.stringify({ error: 'Authentication required' }),
-  //     { status: 401, headers: { 'content-type': 'application/json' } }
-  //   )
-  // }
-  console.log(346, 'test2')
-
-  // console.log(1717, parseJwtServer(token))
   try {
     const session = await verifyToken(refresh_token)
-    console.log(568, session)
+    console.log(568, session?.userId)
 
     if (!session && isProtectedRoute) {
       return NextResponse.redirect(new URL('/login', req.nextUrl))
     }
 
+    if (
+      isPublicRoute &&
+      session?.userId &&
+      !req.nextUrl.pathname.startsWith('/dashboard')
+    ) {
+      return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
+    }
+
     const requestHeaders = new Headers(req.headers)
 
-    requestHeaders.set('x-user-id', session.userId)
-    requestHeaders.set('x-email', session.email)
+    if (session) {
+      requestHeaders.set('x-user-id', session.userId)
+      requestHeaders.set('x-email', session.email)
+    }
 
     const response = NextResponse.next({
       request: {
@@ -58,6 +52,7 @@ export default async function middleware(req: NextRequest) {
 
     // return NextResponse.next()
   } catch (error) {
+    console.error('Authentication error:', error)
     return new NextResponse(
       JSON.stringify({ error: 'Проверка токена не удалась' }),
       { status: 403, headers: { 'content-type': 'application/json' } }
@@ -66,7 +61,7 @@ export default async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/(api/private|trpc|dashboard)(.*)']
+  matcher: ['/(api/private|trpc|dashboard|login|register)(.*)']
 }
 // import { type NextRequest, NextResponse } from 'next/server'
 // import { cookies } from 'next/headers'

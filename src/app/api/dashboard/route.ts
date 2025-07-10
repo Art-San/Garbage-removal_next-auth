@@ -1,4 +1,4 @@
-import { getUsers } from '@/prisma-db'
+import { getUsers } from '@/server/prisma/prisma-db'
 
 export async function GET() {
   try {

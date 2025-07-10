@@ -1,19 +1,19 @@
-import { refreshToken } from '@/shared/api/auth'
+// import { refreshToken } from '@/shared/api/auth'
 import { getUsers } from '@/shared/api/users'
-import { appFetch } from '@/utils/api'
+// import { appFetch } from '@/utils/api'
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+// import { useEffect, useState } from 'react'
 
 // import { useEffect, useState } from 'react'
 
 // const isAuth = true
 
-type User = {
-  id: number
-  email: string
-  password: string
-  name: string | null
-}
+// type User = {
+//   id: number
+//   email: string
+//   password: string
+//   name: string | null
+// }
 
 export function useServices() {
   const { data, isLoading, isError, error } = useQuery({

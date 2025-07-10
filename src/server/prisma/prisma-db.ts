@@ -1,5 +1,5 @@
 import prisma from './prisma-singleton'
-import { hashPassword, verifyPassword } from './utils/hash.util'
+import { hashPassword, verifyPassword } from '../utils/hash.util'
 
 // Заполнение БД тестовыми данными
 const seedUsers = async () => {

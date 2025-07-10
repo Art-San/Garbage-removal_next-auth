@@ -1,4 +1,4 @@
-import { getUsers } from '@/prisma-db'
+import { getUsers } from '@/server/prisma/prisma-db'
 type Users = {
   id: number
   email: string
