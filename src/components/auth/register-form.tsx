@@ -1,7 +1,11 @@
 'use client'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { Button } from '../ui/button'
+import { useForm } from 'react-hook-form'
+import { useRegister } from './hooks/use-register'
+
+import { Button } from '@/shared/ui/kit/button'
+import { Input } from '@/shared/ui/kit/input'
 import {
   Form,
   FormControl,
@@ -9,11 +13,7 @@ import {
   FormItem,
   FormLabel,
   FormMessage
-} from '../ui/form'
-import { Input } from '../ui/input'
-import { useForm } from 'react-hook-form'
-
-import { useRegister } from './hooks/use-register'
+} from '@/shared/ui/kit/form'
 
 const registerSchema = z
   .object({

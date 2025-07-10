@@ -5,7 +5,7 @@ import {
   CardDescription,
   CardContent,
   CardFooter
-} from '../ui/card'
+} from '@/shared/ui/kit/card'
 
 export function AuthLayout({
   form,

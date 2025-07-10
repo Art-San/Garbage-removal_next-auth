@@ -2,20 +2,18 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
-// import { useRouter } from 'next/navigation'
-import { Button } from '../ui/button'
+
+import { useLogin } from './hooks/use-login'
+import { Input } from '@/shared/ui/kit/input'
+import { Button } from '@/shared/ui/kit/button'
 import {
   Form,
+  FormControl,
   FormField,
   FormItem,
   FormLabel,
-  FormControl,
   FormMessage
-} from '../ui/form'
-import { Input } from '../ui/input'
-// import { appFetch } from '@/utils/api'
-// import { useState } from 'react'
-import { useLogin } from './hooks/use-login'
+} from '@/shared/ui/kit/form'
 
 const loginSchema = z.object({
   email: z
