@@ -1,6 +1,6 @@
 import { CONFIG } from '@/shared/model/config'
 import { createApi } from '../lib/create-api'
-import { appSessionStore } from '../session'
+import { appSessionStore } from '../model/session'
 
 export const publicApiClient = createApi({
   baseUrl: CONFIG.API_BASE_URL

@@ -1,5 +1,5 @@
 'use client'
-import { appSessionStore } from '@/shared/session'
+import { appSessionStore } from '@/shared/model/session'
 // import { useRouter } from 'next/navigation'
 import { useLogout } from '../auth/model/use-logout'
 

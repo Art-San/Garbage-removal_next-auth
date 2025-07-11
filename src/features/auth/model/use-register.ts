@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 // import { useRouter } from 'next/navigation'
 import { register } from '@/shared/api/auth'
 import { FormLoginData } from '../ui/login-form'
-import { appSessionStore } from '@/shared/session'
+import { appSessionStore } from '@/shared/model/session'
 
 export function useRegister() {
   // const session = useSession()

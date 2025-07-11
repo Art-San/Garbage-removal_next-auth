@@ -1,5 +1,5 @@
 import { logout } from '@/shared/api/auth'
-import { appSessionStore } from '@/shared/session'
+import { appSessionStore } from '@/shared/model/session'
 import { useMutation } from '@tanstack/react-query'
 import { useRouter } from 'next/navigation'
 
